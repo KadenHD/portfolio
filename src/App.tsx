@@ -1,34 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="developer-wip">
+      <div className="background-animation">
+        <span style={{'--i':1} as React.CSSProperties}>console.log("Building...")</span>
+        <span style={{'--i':2} as React.CSSProperties}>const projects = [];</span>
+        <span style={{'--i':3} as React.CSSProperties}>await createPortfolio();</span>
+        <span style={{'--i':4} as React.CSSProperties}>// Stay tuned!</span>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+
+      <div className="content">
+        <h1 className="typing">
+          Hi, I'm Pierre CLÉMENT<span className="cursor">|</span>
+        </h1>
+        <h2>
+          Portfolio Under Construction
+        </h2>
+        <div className="spinner"></div>
+        <p>I'm currently coding my projects. Check back soon!</p>
+        <div className="socials">
+          <a href="https://github.com/KadenHD" target="_blank">GitHub</a>
+          <a href="https://linkedin.com/in/pierre--clement" target="_blank">LinkedIn</a>
+          <a href="mailto:pierre.clement.oise@gmail.com">Email</a>
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
