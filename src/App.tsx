@@ -18,7 +18,8 @@ function App() {
           Portfolio Under Construction
         </h2>
         <div className="spinner"></div>
-        <p>I'm currently coding my projects. Check back soon!</p>
+        <p>I'm currently working on projects (including this website).</p>
+        <p>Check back soon or contact me!</p>
         <div className="socials">
           <a href="https://github.com/KadenHD" target="_blank">GitHub</a>
           <a href="https://linkedin.com/in/pierre--clement" target="_blank">LinkedIn</a>

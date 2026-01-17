@@ -144,7 +144,7 @@ html, body, #root {
 
 /* Responsive */
 @media (max-width: 600px) {
-  .content h1 { font-size: 2.2rem; }
+  .content h1 { font-size: 1.8rem; }
   .content h2 { font-size: 1.2rem; }
 }
 
