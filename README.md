@@ -94,6 +94,11 @@ VITE_EMAILJS_TEMPLATE_ID=your_template_id
 VITE_EMAILJS_PUBLIC_KEY=your_public_key
 ```
 
+### Production (GitHub Pages)
+
+These variables are stored as GitHub Actions Secrets and injected during the
+`npm run build` step of the CI/CD workflow.
+
 ---
 
 ## Notes
@@ -103,11 +108,6 @@ VITE_EMAILJS_PUBLIC_KEY=your_public_key
 - `main` branch is safe to have README/LICENSE only
 
 ---
-
-### Production (GitHub Pages)
-
-These variables are stored as GitHub Actions Secrets and injected during the
-`npm run build` step of the CI/CD workflow.
 
 ## License
 
