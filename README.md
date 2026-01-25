@@ -73,6 +73,29 @@ npm run build
 
 ---
 
+## Environment Variables
+
+This project uses [**EmailJS**](https://www.emailjs.com/) for the contact form.
+
+The following environment variables are required and must be prefixed with `VITE_`
+(because they are injected at build time by Vite):
+
+- `VITE_EMAILJS_SERVICE_ID`
+- `VITE_EMAILJS_TEMPLATE_ID`
+- `VITE_EMAILJS_PUBLIC_KEY`
+
+### Local Development
+
+Create a `.env` file at the project root:
+
+```env
+VITE_EMAILJS_SERVICE_ID=your_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_template_id
+VITE_EMAILJS_PUBLIC_KEY=your_public_key
+```
+
+---
+
 ## Notes
 
 - `dist/` is never committed; CI/CD handles deployment
@@ -80,6 +103,11 @@ npm run build
 - `main` branch is safe to have README/LICENSE only
 
 ---
+
+### Production (GitHub Pages)
+
+These variables are stored as GitHub Actions Secrets and injected during the
+`npm run build` step of the CI/CD workflow.
 
 ## License
 
