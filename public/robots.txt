@@ -1,0 +1,17 @@
+# robots.txt pour Pierre Clément - Consultant Ingénieur logiciel
+
+User-agent: *
+# Bloquer les dossiers de développement et fichiers sensibles
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /.env
+Disallow: /.git/
+
+# Autoriser tout le reste du site
+Allow: /
+
+# Sitemap pour aider les moteurs à explorer le site
+Sitemap: https://pierre-clement-oise.fr/sitemap.xml
+
+# Crawl-delay pour éviter de surcharger le serveur (optionnel)
+Crawl-delay: 10
