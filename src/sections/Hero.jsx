@@ -122,7 +122,7 @@ export const Hero = () => {
                     {/* Content */}
                     <div className="space-y-4">
                         <FadeUp delay={0.1} direction="right">
-                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight break-all md:break-normal">
                                 Conception et développement de <span className="text-primary glow-text">logiciels</span>
                                 <span className="font-signature italic font-normal text-white">
                                     {" "}
