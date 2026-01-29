@@ -1,0 +1,90 @@
+<div
+  style="
+    font-family: Outfit, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+      sans-serif;
+    font-size: 14px;
+    background-color: #0f1418;
+    color: #f0f2f5;
+    padding: 24px;
+  "
+>
+  <div style="margin-bottom: 16px; color: #98a0b3">
+    Vous avez reçu un message de
+    <strong style="color: #8b5cf6">{{name}}</strong>.
+  </div>
+
+  <div
+    style="
+      margin-top: 20px;
+      padding: 20px 0;
+      border-top: 1px dashed #242b32;
+      border-bottom: 1px dashed #242b32;
+    "
+  >
+    <table role="presentation" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="vertical-align: top">
+          <div
+            role="img"
+            style="
+              padding: 10px 20px;
+              margin-right: 12px;
+              background-color: #1f2830;
+              border-radius: 12px;
+              font-size: 24px;
+              font-weight: 700;
+              color: #8b5cf6;
+            "
+          >
+            ?
+          </div>
+        </td>
+
+        <td style="vertical-align: top">
+          <div
+            style="
+              color: #f0f2f5;
+              font-size: 16px;
+              font-weight: 600;
+            "
+          >
+            {{name}}
+          </div>
+
+          <div
+            style="
+              color: #98a0b3;
+              font-size: 12px;
+              margin-bottom: 10px;
+            "
+          >
+            {{time}}
+          </div>
+
+          <div
+            style="
+              background-color: #141a1f;
+              padding: 14px 16px;
+              border-radius: 12px;
+              color: #f0f2f5;
+              font-size: 15px;
+              line-height: 1.5;
+            "
+          >
+            {{message}}
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div
+    style="
+      margin-top: 18px;
+      font-size: 12px;
+      color: #98a0b3;
+    "
+  >
+    — Notification envoyée depuis https://pierre-clement-oise.fr
+  </div>
+</div>
