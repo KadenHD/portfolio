@@ -11,17 +11,24 @@ const testimonials = [
         avatar: "/testimonials/sa_ontbo.webp"
     },
     {
+        quote: "Notre secteur est un milieu où l’originalité est essentielle pour trouver sa place, et où la technicité est omniprésente. Pierre est, et continue d’être, notre prestataire pour les services techniques les plus pointus. Il est notamment responsable de la réalisation technique de notre site internet front et back end. Autonome, force de proposition et compétent, il n’a pas volé son titre d’ingénieur. Je ne peux que le recommander pour des fonctions techniques exigeantes, où les missions doivent être exécutées avec rigueur et précision.",
+        author: "Jeremy Provost",
+        role: "Fondateur, Fallen Order",
+        avatar: "testimonials/jp_fo.webp"
+    },
+    {
+        quote:"Pierre a apporté une contribution importante au projet Surgic Sense pendant son stage d'un mois au printemps 2025. Il a aidé les développeurs à créer une API web et a recherché des informations très importantes sur lesquelles nous avons basé une grande partie de notre travail. Il avait une attitude très agréable et a aidé les membres de l'équipe de nombreuses façons.",
+        author: "Håkan Lane, PhD",
+        role: "Chercheur & dirigeant, Nighingale Project",
+        avatar: "testimonials/hl_ng.webp",
+        traduce_from: "anglais"
+    },
+    {
         quote: "Dans le milieu du streaming, il est à la fois difficile et rare de trouver des personnes capables de répondre à des demandes qui sortent des sentiers battus. J’ai fait appel à ses services pour l’aspect technique lié à mes streams (chatbox personnalisée, site web, etc.), et il est depuis devenu ma référence lorsque j’ai besoin d’un professionnel disposant de ce niveau de compétences. Respectueux des délais et capable de comprendre les tenants et aboutissants d’un projet, Pierre garantit une réalisation toujours conforme au cahier des charges.",
         author: "Kharnaim",
         role: "Streamer / Youtuber",
         avatar: "testimonials/kharnaim.webp"
     },
-    {
-        quote: "Notre secteur est un milieu où l’originalité est essentielle pour trouver sa place, et où la technicité est omniprésente. Pierre est, et continue d’être, notre prestataire pour les services techniques les plus pointus. Il est notamment responsable de la réalisation technique de notre site internet front et back end. Autonome, force de proposition et compétent, il n’a pas volé son titre d’ingénieur. Je ne peux que le recommander pour des fonctions techniques exigeantes, où les missions doivent être exécutées avec rigueur et précision.",
-        author: "Jeremy Provost",
-        role: "Fondateur, Fallen Order",
-        avatar: "testimonials/jp_fo.webp"
-    }
 ]
 
 export const Testimonials = () => {
@@ -89,6 +96,9 @@ export const Testimonials = () => {
                                     <div className="text-sm text-muted-foreground">
                                     {testimonials[activeIdx].role}
                                     </div>
+                                    {testimonials[activeIdx].traduce_from && (
+                                        <div className="text-xs font-light italic">Traduction de l’avis original en {testimonials[activeIdx].traduce_from}</div>
+                                    )}
                                 </div>
                                 </div>
                             </motion.div>
