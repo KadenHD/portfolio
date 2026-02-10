@@ -19,7 +19,7 @@ const privacyPolicy = [
     links: [
       { href: 'mailto:pierre.clement.oise@gmail.com', text: 'pierre.clement.oise@gmail.com' },
       { href: 'tel:+330682635025', text: '+33 6 82 63 50 25'},
-      { href: 'https://pierre-clement-oise.fr', text: 'https://pierre-clement-oise.fr'}
+      { href: 'https://pierre-clement-oise.fr/', text: 'https://pierre-clement-oise.fr/'}
     ]
   },
   {
