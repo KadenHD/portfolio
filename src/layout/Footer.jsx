@@ -63,10 +63,13 @@ export const Footer = () => {
   }, [isPrivacyOpen, isLegalOpen]);
 
   useEffect(() => {
-    const hash = window.location.hash;
+      const hash = window.location.hash;
 
-    if (hash === "#privacy-policy") openPrivacyPolicy();
-    else if (hash === "#legal-notice") openLegalNotice();
+      if (hash === "#privacy-policy") {
+          requestAnimationFrame(() => openPrivacyPolicy());
+      } else if (hash === "#legal-notice") {
+          requestAnimationFrame(() => openLegalNotice());
+      }
   }, []);
 
   return (

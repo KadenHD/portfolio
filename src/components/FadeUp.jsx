@@ -1,22 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-
-export function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => {
-      setIsMobile(window.innerWidth < breakpoint);
-    };
-
-    check(); // au mount
-    window.addEventListener("resize", check);
-
-    return () => window.removeEventListener("resize", check);
-  }, [breakpoint]);
-
-  return isMobile;
-}
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export function FadeUp({
   className,
@@ -32,7 +16,10 @@ export function FadeUp({
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    if (isInView && !isVisible) setIsVisible(true);
+    if (isInView && !isVisible) {
+      const id = setTimeout(() => setIsVisible(true), 0);
+      return () => clearTimeout(id);
+    }
   }, [isInView, isVisible]);
 
   const finalDistance = isMobile ? 10 : distance;

@@ -6,6 +6,7 @@ import { SiGithub } from "@icons-pack/react-simple-icons"
 import { MaltIcon } from "@/icons/MaltIcon"
 import { UTCIcon } from "@/icons/UTCIcon"
 import {FadeUp} from "@/components/FadeUp"
+import { useState } from "react";
 
 const socialLinks = [
     {icon: LinkedInIcon, href: "https://www.linkedin.com/in/pierre--clement", label: "LinkedIn"},
@@ -88,6 +89,16 @@ export const Hero = () => {
         link.click();
     }
 
+    const [dots] = useState(() => {
+        // This function runs only once on initial mount
+        return [...Array(30)].map(() => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animation: `slow-drift ${15 + Math.random() * 20}s ease-in-out infinite`,
+        animationDelay: `${Math.random() * 5}s`
+        }));
+    });
+
     return <section className="relative min-h-screen flex items-center overflow-hidden ">
         {/* Bg */}
         <div className="absolute inset-0">
@@ -97,13 +108,12 @@ export const Hero = () => {
 
         {/* Dots */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none animate-pulse blur-xs">
-            {[...Array(30)].map((_, i) => (
-                <div key={i} className="absolute w-3 h-3 rounded-full opacity-60 bg-primary" style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                    animation: `slow-drift ${15 + Math.random() * 20}s ease-in-out infinite`,
-                    animationDelay: `${Math.random() * 5}s`
-                }} />
+            {dots.map((dot, i) => (
+            <div
+                key={i}
+                className="absolute w-3 h-3 rounded-full opacity-60 bg-primary"
+                style={dot}
+            />
             ))}
         </div>
 

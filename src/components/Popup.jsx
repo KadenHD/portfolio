@@ -9,7 +9,8 @@ const textsClasses = "flex flex-col gap-1.5";
 const titleClasses = "text-xl font-semibold mb-1";
 
 export const Popup = forwardRef(({ onClose, title, content }, ref) => {
-    const containerRef = ref || useRef(null);
+    const innerRef = useRef(null);
+    const containerRef = ref || innerRef;
     const scrollRef = useRef(null);
 
     useEffect(() => {
