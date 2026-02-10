@@ -12,9 +12,9 @@ This project showcases my work and skills as a developer. It is built with:
 
 - **React** for UI
 - **Vite** as the build tool
+- **jankojjs/react-static-prerender** for prerendring the website
 - **GitHub Actions** for CI/CD
 - **GitHub Pages** for hosting
-- SPA routing handled for smooth navigation
 
 ---
 
@@ -33,7 +33,8 @@ Below is a visual representation of the workflow:
    - Checkout code
    - Install dependencies
    - Build Vite app (`npm run build`)
-   - Upload `dist/` folder as artifact
+   - Prerender the `build/` folder (`npm run prerender`)
+   - Upload `static-pages/` folder as artifact
    - Deploy to GitHub Pages
 3. GitHub Pages serves the site at your custom domain.
 
@@ -71,6 +72,21 @@ To build locally:
 npm run build
 ```
 
+To prerender locally:
+
+```bash
+npm run prerender
+```
+
+> [!NOTE]
+> This will previously auto-build.
+
+To run the project locally as production:
+
+```bash
+npm run preview
+```
+
 ---
 
 ## Environment Variables
@@ -103,7 +119,7 @@ These variables are stored as GitHub Actions Secrets and injected during the
 
 ## Notes
 
-- `dist/` is never committed; CI/CD handles deployment
+- `dist/` and `static-pages/` are never committed; CI/CD handles deployment
 - CNAME file must be in `public/` for custom domain
 - `main` branch is safe to have README/LICENSE only
 
