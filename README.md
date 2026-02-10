@@ -24,7 +24,7 @@ The site is automatically built and deployed whenever changes are pushed to the 
 
 Below is a visual representation of the workflow:
 
-![CI/CD Workflow](./docs/ci-cd-diagram.png)
+![CI/CD Workflow](./docs/ci-cd-diagram.svg)
 
 **Workflow Steps:**
 
