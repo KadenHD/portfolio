@@ -223,8 +223,7 @@ export const Contact = () => {
                             <span className="font-medium">Actuellement Disponible</span>
                         </div>
                         <p className="text-muted-foreground text-sm mb-4">
-                            Disponible pour de nouvelles opportunités, j’interviens en mission courte, moyenne ou longue durée, en tant que consultant indépendant ou renfort d’équipe.
-                            Je favorise les missions à distance ou hybride, mais reste ouvert à du full-site. Je suis disponible à temps partiel ainsi qu'en temps plein.
+                            Disponible pour de nouvelles missions, je propose des interventions en régie (intégration à votre équipe) ou au forfait (projet complet livré clé en main), à distance, hybride ou sur site, à temps partiel ou plein. Je m’adapte à vos contraintes pour faire avancer votre projet efficacement.
                         </p>
                     </FadeUp>
                 </div>
