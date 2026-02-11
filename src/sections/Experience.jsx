@@ -6,10 +6,8 @@ const experiences = [
         role: "Ingénieur logiciel - Conseil & Développement ",
         company: "Consultant Indépendant",
         description: [
-            "Conseil et étude de faisabilité de solutions innovantes. ",
-            "Pilotage intégral de projet numérique. ",
-            "Intervention dans la conception et le développement de logiciels. ",
-            "Automatisations et évolutions de processus."
+            "Consultant indépendant spécialisé en ingénierie logicielle, j’accompagne startups et PME dans la conception et le développement de solutions sur mesure, de l’architecture à la mise en production. ",
+            "Intégration au sein d'équipes ou pilotage complet de projet, pour des missions courtes comme longues."
         ],
         technologies: ["Architecture logicielle", "Conseil", "Développement de logiciels", "R&D", "Gestion de projet IT"],
         current: true
