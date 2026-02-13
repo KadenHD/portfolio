@@ -4,6 +4,7 @@ import { LinkedInIcon } from "@/icons/LinkedInIcon"
 import { ArrowRight, Download, ChevronDown } from "lucide-react"
 import { SiGithub } from "@icons-pack/react-simple-icons"
 import { MaltIcon } from "@/icons/MaltIcon"
+import { CollectiveWorkIcon } from "@/icons/CollectiveWorkIcon"
 import { UTCIcon } from "@/icons/UTCIcon"
 import {FadeUp} from "@/components/FadeUp"
 import { useState } from "react";
@@ -13,6 +14,7 @@ const socialLinks = [
     {icon: SiGithub, href: "https://github.com/KadenHD", label: "GitHub"},
     { icon: UTCIcon, href: "https://uteam.fr/consultant/presentation/pierre-clement", label: "UTeam"},
     {icon: MaltIcon, href: "https://www.malt.fr/profile/pierreclement1", label: "Malt"},
+    {icon: CollectiveWorkIcon, href: "https://www.collective.work/profile/pierre-clement", label: "Collective Work"}
 ]
 
 const skills = [
@@ -162,7 +164,7 @@ export const Hero = () => {
                     </FadeUp>
                     {/* Social Links */}
                     <FadeUp className="flex items-center gap-4" delay={0.4} direction="right">
-                        <span className="text-sm text-muted-foreground">Me suivre: </span>
+                        <span className="text-sm text-muted-foreground">Me retrouver: </span>
                         {socialLinks.map((social, index) => (
                             <a aria-label={social.label} key={index} href={social.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all duration-300">
                                 {<social.icon className="w-5 h-5" />}

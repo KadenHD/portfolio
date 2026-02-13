@@ -1,5 +1,6 @@
 import { SiGithub } from "@icons-pack/react-simple-icons"
 import { MaltIcon } from "@/icons/MaltIcon"
+import { CollectiveWorkIcon } from "@/icons/CollectiveWorkIcon"
 import { LinkedInIcon } from "@/icons/LinkedInIcon"
 import { UTCIcon } from "@/icons/UTCIcon"
 import { useState, useEffect, useRef } from "react";
@@ -12,6 +13,7 @@ const socialLinks = [
     {icon: SiGithub, href: "https://github.com/KadenHD", label: "GitHub"},
     { icon: UTCIcon, href: "https://uteam.fr/consultant/presentation/pierre-clement", label: "UTeam"},
     {icon: MaltIcon, href: "https://www.malt.fr/profile/pierreclement1", label: "Malt"},
+    {icon: CollectiveWorkIcon, href: "https://www.collective.work/profile/pierre-clement", label: "Collective Work"}
 ]
 
 const footerLinks = [
