@@ -1,19 +1,16 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
-import { PostHogProvider } from '@posthog/react'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
+import { I18nProvider } from "./i18n/I18nProvider.jsx";
+import { clearLegacyAnalytics } from "./lib/clearLegacyAnalytics";
 
-createRoot(document.getElementById('root')).render(
+clearLegacyAnalytics();
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-        enableExceptionAutocapture: true,
-      }}
-    >
+    <I18nProvider>
       <App />
-    </PostHogProvider>
+    </I18nProvider>
   </StrictMode>,
-)
+);

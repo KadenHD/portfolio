@@ -5,20 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "prerender": "react-static-prerender --with-build",
+    "build": "node scripts/generate-site.mjs && vite build",
+    "prerender": "npm run brand && react-static-prerender --with-build && node scripts/finalize-static.mjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:seo": "npm run prerender && node scripts/preview-seo.mjs",
+    "test": "node --test --test-isolation=none tests/*.test.mjs",
+    "social": "npm run brand",
+    "test:browser": "node scripts/browser-check.mjs",
+    "brand": "node scripts/brand-assets.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@icons-pack/react-simple-icons": "^13.8.0",
-    "@posthog/react": "^1.8.1",
     "@tailwindcss/vite": "^4.1.18",
-    "framer-motion": "^12.29.2",
     "lucide-react": "^0.562.0",
-    "posthog-js": "^1.356.2",
-    "posthog-node": "^5.26.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.1.18"
@@ -32,10 +33,14 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "puppeteer": "24.37.2",
     "react-static-prerender": "^1.3.0",
     "vite": "npm:rolldown-vite@7.2.5"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "engines": {
+    "node": ">=24 <25"
   }
 }

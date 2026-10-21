@@ -1,93 +1,154 @@
-import { ArrowBigUpDash, X } from "lucide-react";
-import { forwardRef, useEffect, useRef } from "react";
-import {FadeUp} from "@/components/FadeUp"
-import {Button} from "@/components/Button"
+import { useI18n } from "@/i18n/useI18n";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUp, X } from "lucide-react";
 
-const linkClasses = "underline hover:text-primary/70 transition-colors";
-const textClasses = "text-white/70";
-const textsClasses = "flex flex-col gap-1.5";
-const titleClasses = "text-xl font-semibold mb-1";
+export const Popup = forwardRef(function Popup(
+  { onClose, title, content },
+  forwardedRef,
+) {
+  const { t } = useI18n();
+  const localRef = useRef(null);
+  const contentRef = useRef(null);
+  const [scrollState, setScrollState] = useState({
+    overflows: false,
+    atTop: true,
+  });
 
-export const Popup = forwardRef(({ onClose, title, content }, ref) => {
-    const innerRef = useRef(null);
-    const containerRef = ref || innerRef;
-    const scrollRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (containerRef.current && !containerRef.current.contains(event.target)) {
-                onClose?.();
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [containerRef, onClose]);
-
-    const scrollToTop = () => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTo({
-                top: 0,
-                behavior: 'smooth', // smooth scrolling
-            });
-        }
-    };
-
-    return (
-        <div className="fixed inset-0 z-50 bg-background overflow-y-auto overflow-x-hidden flex items-start justify-center p-6" ref={scrollRef}>
-            <FadeUp direction="down" distance={50}>
-                <div
-                    className="container glass glow-border mx-auto md:max-w-1/3 p-8 flex flex-col gap-2 rounded-3xl border border-primary/30"
-                    ref={containerRef}
-                >
-                    <div className={textsClasses}>
-                        <div className="flex flex-row items-center justify-between">
-                            <h2 className="text-2xl font-bold">{title}</h2>
-                            <X
-                                onClick={onClose}
-                                className="h-5 w-5 text-muted-foreground hover:text-white transition-colors cursor-pointer"
-                            />
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                        {content.map((c, idx) => (
-                            <div key={idx}>
-                                {c.title && <h3 className={titleClasses}>{c.title} :</h3>}
-                                {(c.texts || c.links) && (
-                                    <div className={c.spacing ? textsClasses : ''}>
-                                        {c.texts &&
-                                            c.texts.map((t, tIdx) => (
-                                                <p key={tIdx} className={textClasses}>{t}</p>
-                                            ))}
-                                        {c.links &&
-                                            c.links.map((l, lIdx) => (
-                                                <p key={lIdx} className={textClasses}>
-                                                    <a
-                                                        className={linkClasses}
-                                                        href={l.href}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        {l.text}
-                                                    </a>
-                                                </p>
-                                            ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    <FadeUp className="flex flex-row gap-6 mt-4">
-                        <Button className="w-full" onClick={onClose}>Fermer</Button>
-                        <button className="p-2 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all" onClick={scrollToTop}>
-                            <ArrowBigUpDash className="h-6 w-8" />
-                        </button>
-                    </FadeUp>
-
-                </div>
-            </FadeUp>
-        </div>
+  const updateScrollState = useCallback(() => {
+    const element = contentRef.current;
+    if (!element) return;
+    const overflows = element.scrollHeight > element.clientHeight + 1;
+    const atTop = element.scrollTop < 2;
+    setScrollState((previous) =>
+      previous.overflows === overflows && previous.atTop === atTop
+        ? previous
+        : { overflows, atTop },
     );
+  }, []);
+
+  useEffect(() => {
+    const dialog = localRef.current;
+    const active = document.activeElement;
+    if (!dialog.open) dialog.showModal();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const frame = requestAnimationFrame(updateScrollState);
+    const observer = new ResizeObserver(updateScrollState);
+    observer.observe(contentRef.current);
+    let mounted = true;
+    document.fonts.ready.then(() => {
+      if (mounted) updateScrollState();
+    });
+    return () => {
+      mounted = false;
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      active?.focus();
+    };
+  }, [updateScrollState]);
+
+  function scrollToTop() {
+    contentRef.current?.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
+  }
+
+  return (
+    <dialog
+      ref={(node) => {
+        localRef.current = node;
+        if (typeof forwardedRef === "function") forwardedRef(node);
+        else if (forwardedRef) forwardedRef.current = node;
+      }}
+      className="legal-dialog"
+      aria-labelledby="legal-dialog-title"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      onClick={(event) => {
+        if (event.target === localRef.current) {
+          const rect = event.target.getBoundingClientRect();
+          if (
+            event.clientX < rect.left ||
+            event.clientX > rect.right ||
+            event.clientY < rect.top ||
+            event.clientY > rect.bottom
+          )
+            onClose();
+        }
+      }}
+    >
+      <div className="dialog-heading">
+        <h2 id="legal-dialog-title">{title}</h2>
+        <button type="button" onClick={onClose} aria-label={t.legal.close}>
+          <X size={22} aria-hidden="true" />
+        </button>
+      </div>
+      <div
+        className="legal-content"
+        ref={contentRef}
+        onScroll={updateScrollState}
+        tabIndex={0}
+        aria-label={title}
+      >
+        {content.map((section, index) => (
+          <section key={index}>
+            {section.title && <h3>{section.title}</h3>}
+            {section.texts?.map((text, i) => (
+              <p key={i}>
+                {Array.isArray(text)
+                  ? text.map((part, index) =>
+                      typeof part === "string" ? (
+                        part
+                      ) : (
+                        <a
+                          key={index}
+                          href={part.href}
+                          className={
+                            part.noWrap ? "legal-identifier" : undefined
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {part.text}
+                        </a>
+                      ),
+                    )
+                  : text}
+              </p>
+            ))}
+            {section.links?.map((link) => (
+              <p key={link.href}>
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  {link.text}
+                </a>
+              </p>
+            ))}
+          </section>
+        ))}
+      </div>
+      <div className="dialog-actions">
+        <button type="button" className="button" onClick={onClose}>
+          {t.common.close}
+        </button>
+        {scrollState.overflows && (
+          <button
+            type="button"
+            className="dialog-scroll-top"
+            onClick={scrollToTop}
+            disabled={scrollState.atTop}
+            aria-label={t.legal.top}
+          >
+            {t.common.top} <ArrowUp size={18} aria-hidden="true" />
+          </button>
+        )}
+      </div>
+    </dialog>
+  );
 });

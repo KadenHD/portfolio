@@ -1,150 +1,80 @@
-import { SiGithub } from "@icons-pack/react-simple-icons"
-// import { MaltIcon } from "@/icons/MaltIcon"
-// import { CollectiveWorkIcon } from "@/icons/CollectiveWorkIcon"
-import { LinkedInIcon } from "@/icons/LinkedInIcon"
-import { PappersIcon } from "@/icons/PappersIcon"
-// import { UTCIcon } from "@/icons/UTCIcon"
-import { useState, useEffect, useRef } from "react";
+import { useI18n } from "@/i18n/useI18n";
+import { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
 import { LegalNoticePopup } from "@/layout/LegalNoticePopup";
-import { PrivacyPolicyPopup } from "@/layout/PrivacyPolicyPopup"
-import {FadeUp} from "@/components/FadeUp"
-import { usePostHog } from '@posthog/react'
-
-const socialLinks = [
-    {icon: LinkedInIcon, href: "https://www.linkedin.com/in/pierre--clement", label: "LinkedIn"},
-    {icon: SiGithub, href: "https://github.com/KadenHD", label: "GitHub"},
-    {icon: PappersIcon, href: "https://www.pappers.fr/entreprise/994768406", label: "Pappers"},
-    // { icon: UTCIcon, href: "https://uteam.fr/consultant/presentation/pierre-clement", label: "UTeam"},
-    // {icon: MaltIcon, href: "https://www.malt.fr/profile/pierreclement1", label: "Malt"},
-    // {icon: CollectiveWorkIcon, href: "https://www.collective.work/profile/pierre-clement", label: "Collective Work"}
-]
-
-const footerLinks = [
-  { href: "#about", label: "À propos" },
-  { href: "#projects", label: "Projets" },
-  { href: "#experience", label: "Expériences" },
-  { href: "#testimonials", label: "Témoignages" },
-];
-
-export const Footer = () => {
-  const posthog = usePostHog()
-  const currentYear = new Date().getFullYear();
-  const legalRef = useRef(null);
-  const privacyRef = useRef(null)
-  const [isPrivacyOpen, setPrivacyOpen] = useState(false);
-  const [isLegalOpen, setLegalOpen] = useState(false);
-  const openPrivacyPolicy = () => {
-    posthog.capture('privacy_policy_opened')
-    setPrivacyOpen(true); setLegalOpen(false); window.location.href="#privacy-policy";
-  }
-  const openLegalNotice = () => {
-    posthog.capture('legal_notice_opened')
-    setLegalOpen(true); setPrivacyOpen(false); window.location.href="#legal-notice";
-  }
-  const closePrivacyPolicy = () => {
-    if (privacyRef.current) {
-      privacyRef.current.classList.add("animate-fade-out");
-      privacyRef.current.addEventListener(
-        "animationend",
-        () => setPrivacyOpen(false),
-        { once: true }
-      );
-    }
-  };
-  const closeLegalNotice = () => {
-    if (legalRef.current) {
-      legalRef.current.classList.add("animate-fade-out");
-      legalRef.current.addEventListener(
-        "animationend",
-        () => setLegalOpen(false),
-        { once: true }
-      );
-    }
-  };
-
+import { PrivacyPolicyPopup } from "@/layout/PrivacyPolicyPopup";
+import { socialLinks } from "@/data/socials";
+export function Footer() {
+  const { t } = useI18n();
+  const [panel, setPanel] = useState(() =>
+    window.location.hash === "#privacy-policy"
+      ? "privacy"
+      : window.location.hash === "#legal-notice"
+        ? "legal"
+        : null,
+  );
   useEffect(() => {
-    if (isPrivacyOpen || isLegalOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
+    const handleHash = () => {
+      if (window.location.hash === "#privacy-policy") setPanel("privacy");
+      else if (window.location.hash === "#legal-notice") setPanel("legal");
+      else setPanel(null);
     };
-  }, [isPrivacyOpen, isLegalOpen]);
-
-  useEffect(() => {
-      const hash = window.location.hash;
-
-      if (hash === "#privacy-policy") {
-          requestAnimationFrame(() => openPrivacyPolicy());
-      } else if (hash === "#legal-notice") {
-          requestAnimationFrame(() => openLegalNotice());
-      }
+    window.addEventListener("hashchange", handleHash);
+    return () => window.removeEventListener("hashchange", handleHash);
   }, []);
-
+  function show(type) {
+    setPanel(type);
+  }
+  const close = () => {
+    setPanel(null);
+    if (["#privacy-policy", "#legal-notice"].includes(window.location.hash)) {
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search,
+      );
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    }
+  };
   return (
-    <footer className="py-8 border-t border-border overflow-hidden">
-      <FadeUp direction="up">
-        <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            {/* Logo & Copyright */}
-            <div className="text-center md:text-left">
-              <a href="#" className="text-xl font-bold tracking-tigh group">
-                  <span className="group-hover:text-primary transition-colors">P</span>ierre <span className="group-hover:text-primary transition-colors">C</span>lément<span className="text-primary">.</span>
+    <footer className="site-footer page-width">
+      <div className="footer-top">
+        <a className="wordmark" href="#" aria-label={t.nav.home}>
+          <span className="wordmark-initial">P</span>ierre{" "}
+          <span className="wordmark-initial">C</span>lément
+          <span className="wordmark-dot">.</span>
+        </a>
+        <p>{t.footer.tagline}</p>
+        <div className="social-links">
+          {socialLinks.map((social) => {
+            const { id, label, href, icon: Icon } = social;
+            return (
+              <a key={id} href={href} target="_blank" rel="noopener noreferrer">
+                <span aria-hidden="true">
+                  <Icon size={18} />
+                </span>
+                {label}
               </a>
-              <p className="text-sm text-muted-foreground mt-2">
-                © {currentYear} Pierre Clément. Tous droits réservés.
-              </p>
-            </div>
-
-            {/* Links */}
-            <nav className="flex flex-wrap justify-center gap-6">
-              {footerLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-            
-            {/* Legal Links */}
-            <nav className="flex flex-wrap justify-center gap-6">
-              <button onClick={openPrivacyPolicy} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Politique de confidentialité
-              </button>
-              <button onClick={openLegalNotice} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Mentions légales
-              </button>
-            </nav>
-
-            {/* Social Links */}
-            <div className="flex items-center gap-4">
-              {socialLinks.map((social, idx) => (
-                <a
-                  key={idx}
-                  href={social.href}
-                  aria-label={social.label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => posthog.capture('footer_social_link_clicked', { platform: social.label, href: social.href, source: 'footer' })}
-                  className="p-2 rounded-full glass hover:bg-primary/10 hover:text-primary transition-all"
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
-          </div>
+            );
+          })}
         </div>
-      </FadeUp>
-      
-      {/* Legal Popups */}
-      {isPrivacyOpen && <PrivacyPolicyPopup ref={privacyRef} onClose={closePrivacyPolicy} />}
-      {isLegalOpen && <LegalNoticePopup ref={legalRef} onClose={closeLegalNotice} />}
+      </div>
+      <nav className="footer-section-links" aria-label={t.serviceAreas.heading}>
+        <a href="#service-areas">{t.serviceAreas.areasLink}</a>
+        <a href="#faq">{t.serviceAreas.faqLink}</a>
+      </nav>
+      <div className="footer-bottom">
+        <small>© {new Date().getFullYear()} Pierre Clément</small>
+        <div>
+          <button onClick={() => show("legal")}>{t.footer.legal}</button>
+          <button onClick={() => show("privacy")}>{t.footer.privacy}</button>
+          <a href="#">
+            {t.common.top} <ArrowUp size={14} aria-hidden="true" />
+          </a>
+        </div>
+      </div>
+      {panel === "legal" && <LegalNoticePopup onClose={close} />}
+      {panel === "privacy" && <PrivacyPolicyPopup onClose={close} />}
     </footer>
   );
-};
+}

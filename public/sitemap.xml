@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Page principale -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://pierre-clement-oise.fr/</loc>
-    <lastmod>2026-01-28</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pierre-clement-oise.fr/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pierre-clement-oise.fr/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pierre-clement-oise.fr/" />
+  </url>
+  <url>
+    <loc>https://pierre-clement-oise.fr/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://pierre-clement-oise.fr/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://pierre-clement-oise.fr/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pierre-clement-oise.fr/" />
   </url>
 </urlset>

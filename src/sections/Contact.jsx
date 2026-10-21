@@ -1,240 +1,241 @@
-import {Button} from "@/components/Button"
-import { AlertCircle, CheckCircle, Loader2, Mail, MapPin, Phone, Send } from "lucide-react"
-import { useState } from "react"
-import emailjs from "@emailjs/browser"
-import { SiCalendly } from "@icons-pack/react-simple-icons"
-import { AnimatedButton } from "@/components/AnimatedButton"
-import {FadeUp} from "@/components/FadeUp"
-import { usePostHog } from '@posthog/react'
-
-const contactInfo = [
-    {
-        icon: Mail,
-        label: "Email",
-        value: "pierre.clement.oise@gmail.com",
-        href: "mailto:pierre.clement.oise@gmail.com"
-    },
-    {
-        icon: Phone,
-        label: "Téléphone Portable",
-        value: "+33 6 82 63 50 25",
-        href: "tel:+330682635025"
-    },
-]
-
-const maps = [
-    {
-        value: "Hauts-de-France",
-        href: "https://www.google.fr/maps?q=HDF"
-    },
-    {
-        value: "Île-de-France",
-        href: "https://www.google.fr/maps?q=IDF"
+import { useI18n } from "@/i18n/useI18n";
+import { useRef, useState } from "react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  LoaderCircle,
+  Mail,
+  Phone,
+} from "lucide-react";
+import { business } from "@/data/legal";
+const address = business.email;
+export function Contact() {
+  const { t } = useI18n();
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+  const inFlight = useRef(false);
+  const [status, setStatus] = useState(null);
+  const configured = Boolean(
+    import.meta.env.VITE_EMAILJS_SERVICE_ID &&
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID &&
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+  );
+  async function submit(event) {
+    event.preventDefault();
+    if (inFlight.current) return;
+    if (!form.name.trim() || !form.message.trim()) {
+      setStatus({
+        type: "error",
+        key: "validation",
+      });
+      return;
     }
-]
-
-export const Contact = () => {
-    const posthog = usePostHog()
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        message: ""
-    });
-    const [isLoading, setIsLoading] = useState(false);
-    const [submitStatus, setSubmitStatus] = useState({
-        type: null, // 'success' or 'error'
-        message: ""
-    });
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        setIsLoading(true);
-        setSubmitStatus({type:null, message: ""});
-
-        try {
-            const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-            const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-            const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
-            if (!serviceId || !templateId || !publicKey) {
-                throw new Error("Configuration d'EmailJS manquante. Veuillez vérifier vos variables d'environnement.");
-            }
-
-            await emailjs.send(serviceId, templateId, {
-                name: formData.name,
-                email: formData.email,
-                message: formData.message,
-            }, publicKey)
-
-            posthog.capture('contact_form_submitted', {
-                sender_name: formData.name,
-                sender_email: formData.email,
-                message_length: formData.message.length,
-            })
-
-            setSubmitStatus({
-                type: "success",
-                message: "Message envoyé avec succès ! Je vous répondrai bientôt."
-            });
-            setFormData({ name:"", email: "", message: "" });
-        } catch (err) {
-            console.log("EmailJS error:", err)
-            posthog.capture('contact_form_error', {
-                error_message: err.text || err.message || 'unknown error',
-            })
-            posthog.captureException(err)
-            setSubmitStatus({
-                type: "error",
-                message: err.text || "Impossible d'envoyer le message. Veuillez réessayer plus tard."
-            })
-        } finally {
-            setIsLoading(false);
-        }
+    if (!configured) return;
+    inFlight.current = true;
+    setSending(true);
+    setStatus(null);
+    try {
+      const { default: emailjs } = await import("@emailjs/browser");
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          message: form.message.trim(),
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+      );
+      setStatus({
+        type: "success",
+        key: "success",
+      });
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus({
+        type: "error",
+        key: "error",
+      });
+    } finally {
+      inFlight.current = false;
+      setSending(false);
     }
-
-    return <section id="contact" className="py-16 md:py-32 relative overflow-hidden">
-        {/* Bg glows */}
-        <div className="absolute top-0 left-0 w-full h-full">
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-highlight/5 rounded-full blur-3xl" />
+  }
+  function update(event) {
+    setForm({ ...form, [event.target.name]: event.target.value });
+  }
+  const emailDraft = `mailto:${address}?subject=${encodeURIComponent(t.contact.subject)}&body=${encodeURIComponent(`${t.contact.greeting}\n\n${form.message}\n\n${form.name}\n${form.email}`)}`;
+  return (
+    <section
+      id="contact"
+      className="contact-section page-width"
+      aria-labelledby="contact-title"
+    >
+      <div className="contact-copy">
+        <h2 id="contact-title">
+          {t.contact.title}
+          <br />
+          {t.contact.subtitle}
+          <span className="accent">.</span>
+        </h2>
+        <p>{t.contact.intro}</p>
+        <a className="contact-email" href={`mailto:${address}`}>
+          <Mail size={20} aria-hidden="true" />
+          {address}
+        </a>
+        <a className="contact-phone" href="tel:+33682635025">
+          <Phone size={18} aria-hidden="true" />
+          +33 6 82 63 50 25
+        </a>
+        <p className="contact-location">
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Oise%2C%20France"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Oise ${t.contact.maps}, ${t.common.newTab}`}
+          >
+            Oise
+          </a>
+          {" : "}
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Compi%C3%A8gne%2C%20France"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Compiègne ${t.contact.maps}, ${t.common.newTab}`}
+          >
+            Compiègne
+          </a>
+          {", "}
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Beauvais%2C%20France"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Beauvais ${t.contact.maps}, ${t.common.newTab}`}
+          >
+            Beauvais
+          </a>
+          <br />
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Hauts-de-France%2C%20France"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Hauts-de-France ${t.contact.maps}, ${t.common.newTab}`}
+          >
+            Hauts-de-France
+          </a>
+          ,{" "}
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=%C3%8Ele-de-France%2C%20France"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Île-de-France ${t.contact.maps}, ${t.common.newTab}`}
+          >
+            Île-de-France
+          </a>
+          <br />
+          {t.contact.remote}
+        </p>
+        <a
+          className="text-link"
+          href="https://calendly.com/pierre-clement-oise/30min"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t.contact.meeting}
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </a>
+      </div>
+      <form
+        onSubmit={submit}
+        className="contact-form"
+        aria-busy={sending}
+        aria-describedby="contact-privacy"
+      >
+        <div className="form-pair">
+          <div>
+            <label htmlFor="contact-name">{t.contact.name}</label>
+            <input
+              id="contact-name"
+              name="name"
+              autoComplete="name"
+              maxLength={120}
+              required
+              value={form.name}
+              onChange={update}
+              placeholder={t.contact.namePlaceholder}
+            />
+          </div>
+          <div>
+            <label htmlFor="contact-email">{t.contact.email}</label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              maxLength={254}
+              required
+              value={form.email}
+              onChange={update}
+              placeholder={t.contact.emailPlaceholder}
+            />
+          </div>
         </div>
-        <div className="container mx-auto px-6 relative z-10">
-            {/* Section Header */}
-            <div className="text-center max-w-3xl mx-auto mb-16">
-                <FadeUp delay={0.0}>
-                    <span className="text-secondary-foreground text-sm font-medium tracking-wider uppercase">Entrons En Contact</span>
-                </FadeUp>
-                <FadeUp delay={0.1}>
-                    <h2 className="text-4xl md:text-5xl font-bold mt-4 mb-6 text-secondary-foreground">
-                        Ton projet mérite d’être construit,
-                        <span className="font-signature italic font-normal text-white">
-                            {" "}
-                            pas juste imaginé.
-                        </span>
-                    </h2>
-                </FadeUp>
-                <FadeUp delay={0.2}>
-                    <p className="text-muted-foreground">
-                        Vous avez un projet en tête à concrétiser ou juste envie de dire bonjour ? Remplissez le formulaire ci-dessous, prenez rendez-vous sur Calendly ou envoyez-moi un email directement.
-                    </p>
-                </FadeUp>
-            </div>
-
-            <div className="grid lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-                <FadeUp delay={0.3} className="glass p-8 flex flex-col gap-6 rounded-3xl border border-primary/30">
-                    {/* Contact Form */}
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium mb-2">Nom</label>
-                            <input id="name" type="text" required placeholder="Votre nom..." value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
-                        </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
-                            <input id="email" type="email" required placeholder="votre@email.com" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" />
-                        </div>
-
-                        <div>
-                            <label htmlFor="message" className="block text-sm font-medium mb-2">Message</label>
-                            <textarea id="message" rows={5} required placeholder="Votre message..." value={formData.message} onChange={(e) => setFormData({...formData, message: e.target.value})} className="w-full px-4 py-3 bg-surface rounded-xl border border-border focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none" />
-                        </div>
-
-                        <Button type="submit" disabled={isLoading} size="lg" className="w-full">
-                            { isLoading ? (<><Loader2 className="animate-spin" /></>) : (<>Envoyer le message <Send className="w-5 h-5" /></>) }
-                        </Button>
-
-                        { submitStatus.type && (
-                            <div className={`flex items-center gap-3 p-4 rounded-xl ${submitStatus.type === "success" ? "bg-green-500/10 border border-green-500/20 text-green-400" : "bg-red-500/10 border border-red-500/20 text-red-400"}`}>
-                                { submitStatus.type === "success" ? (<CheckCircle className="w-5 h-5 shrink-0" />) : (<AlertCircle className="w-5 h-5 shrink-0" />) }
-                                <p className="text-sm">{submitStatus.message}</p>
-                            </div>
-                        ) }
-                    </form>
-                    {/* Contact Divider */}
-                    <div className="flex items-center w-full">
-                        <div className="flex-1 h-0.5 bg-linear-to-r from-transparent via-muted-foreground/70 to-transparent"></div>
-                        <p className="px-2 text-sm text-white/80 uppercase">
-                            Ou bien
-                        </p>
-                        <div className="flex-1 h-0.5 bg-linear-to-l from-transparent via-muted-foreground/70 to-transparent"></div>
-                    </div>
-                    {/* Calendly Button */}
-                    <div className="flex flex-row items-center justify-center">
-                        <AnimatedButton size="lg" className="w-full" onClick={() => {
-                            posthog.capture('calendly_clicked', { source: 'contact_section' })
-                            window.open("https://calendly.com/pierre-clement-oise/30min","_blank","noopener,noreferrer")
-                        }}>
-                            <SiCalendly className="w-5 h-5" />
-                            Prendre rendez-vous sur Calendly
-                        </AnimatedButton>
-                    </div>
-                </FadeUp>
-
-                {/* Contact Info */}
-                <div className="space-y-6">
-                    {/* Personnal Info */}
-                    <FadeUp delay={0.4} className="glass rounded-3xl p-8">
-                        <h3 className="text-xl font-semibold mb-6">
-                            Mes coordonnées
-                        </h3>
-                        <div className="space-y-4">
-                            {contactInfo.map((item, i) => (
-                            <a
-                                key={i}
-                                href={item.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-4 p-4 rounded-xl hover:bg-surface transition-colors group"
-                            >
-                                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                                    <item.icon className="w-5 h-5 text-primary" />
-                                </div>
-                                <div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {item.label}
-                                    </div>
-                                    <div className="font-medium break-all">{item.value}</div>
-                                </div>
-                            </a>
-                            ))}
-                            <div className="p-4 flex flex-row items-center gap-4 rounded-xl hover:bg-surface group transition-colors">
-                                <div className={`w-12 h-26 md:h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors`}>
-                                    <MapPin className="w-5 h-5 text-primary" />
-                                </div>
-                                <div>
-                                    <div className="text-sm text-muted-foreground">
-                                        Mes disponibilités*
-                                    </div>
-                                    <div className="font-medium flex flex-col md:flex-row md:gap-2">
-                                        {maps.map((m, idx) => (
-                                            <a key={idx} href={m.href} target="_blank" rel="noopener noreferrer" className="text-sm font-medium flex flex-row">
-                                                <p className="hover:text-primary/80 transition-colors">
-                                                    {m.value}
-                                                </p>
-                                                <span className="opacity-0 md:opacity-100">{idx < maps.length - 1 ? ',' : ''}</span>
-                                            </a>
-                                        ))}
-                                    </div>
-                                </div>
-                                
-                            </div>
-                            <p className="text-xs text-muted-foreground">* Ainsi qu’à distance sur l’ensemble du territoire</p>
-                        </div>
-                    </FadeUp>
-
-                    {/* Availability Card */}
-                    <FadeUp delay={0.4} className="glass rounded-3xl p-8 border border-primary/30">
-                        <div className="flex items-center gap-3 mb-4">
-                            <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                            <span className="font-medium">Actuellement Disponible</span>
-                        </div>
-                        <p className="text-muted-foreground text-sm mb-4">
-                            Disponible pour de nouvelles missions, je propose des interventions en régie (intégration à votre équipe) ou au forfait (projet complet livré clé en main), à distance, hybride ou sur site, à temps partiel ou plein. Je m’adapte à vos contraintes pour faire avancer votre projet efficacement.
-                        </p>
-                    </FadeUp>
-                </div>
-            </div>
-        </div>
+        <label htmlFor="contact-message">{t.contact.message}</label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows={5}
+          maxLength={10000}
+          required
+          value={form.message}
+          onChange={update}
+          placeholder={t.contact.messagePlaceholder}
+        />
+        <p className="form-note" id="contact-privacy">
+          {t.contact.privacy} <a href="#privacy-policy">{t.contact.policy}</a>.
+        </p>
+        {configured ? (
+          <button className="button" type="submit" disabled={sending}>
+            {sending ? (
+              <>
+                <LoaderCircle
+                  className="loading-icon"
+                  size={20}
+                  aria-hidden="true"
+                />
+                {t.contact.sending}
+              </>
+            ) : (
+              <>
+                {t.contact.send}
+                <ArrowRight size={20} aria-hidden="true" />
+              </>
+            )}
+          </button>
+        ) : (
+          <>
+            <p className="form-fallback">{t.contact.fallback}</p>
+            <a className="button" href={emailDraft}>
+              {t.contact.emailContinue}
+              <ArrowRight size={20} aria-hidden="true" />
+            </a>
+          </>
+        )}
+        {status && (
+          <div
+            className={`form-status ${status.type}`}
+            role={status.type === "error" ? "alert" : "status"}
+          >
+            <p>{t.contact[status.key]}</p>
+            {status.type === "error" && (
+              <a href={emailDraft}>
+                {t.contact.emailSend}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            )}
+          </div>
+        )}
+      </form>
     </section>
+  );
 }

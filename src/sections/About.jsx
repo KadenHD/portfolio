@@ -1,99 +1,54 @@
-import { Code2, Lightbulb, Rocket, Cpu } from "lucide-react"
-import { FadeUp } from "@/components/FadeUp"
+import {
+  ChartNoAxesColumnIncreasing,
+  UsersRound,
+  Settings2,
+} from "lucide-react";
+import { useI18n } from "@/i18n/useI18n";
 
-const highlights = [
-    {
-        icon: Lightbulb,
-        title: "R&D & Innovation",
-        description: "R&D, prototypage, PoC, MVP et tests itératifs pour explorer des solutions innovantes et valider rapidement la faisabilité."
-    },
-    {
-        icon: Rocket,
-        title: "Pilotage de projet",
-        description: "Structuration et pilotage de A à Z de projet numérique. Accompagnement technique long terme."
-    },
-    {
-        icon: Code2,
-        title: "Développement sur mesure",
-        description: "Conception et développement de solutions logicielles sur mesure, robustes et scalables."
-    },
-    {
-        icon: Cpu,
-        title: "Automatisation & IA",
-        description: "Automatisation des processus métiers, intégrations des systèmes, assistance aux évolutions et insertion d’IA."
-    },
-]
-
-export const About = () => {
-    return <section id="about" className="py-16 md:py-32 relative overflow-hidden">
-        <div className="container mx-auto px-6 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-                {/* Left Column */}
-                <div className="space-y-8">
-                    <FadeUp delay={0.0}>
-                        <span className="text-secondary-foreground text-sm font-medium tracking-wider uppercase">À propos de moi</span>
-                    </FadeUp>
-
-                    <FadeUp delay={0.1}>
-                        <h2 className="text-4xl md:text-5xl font-bold leading-tight text-secondary-foreground">
-                            Créateur d'expériences digitales,
-                            <span className="font-signature italic font-normal text-white">
-                                {" "}
-                                robustes et intelligentes.
-                            </span>
-                        </h2>
-                    </FadeUp>
-
-                    <div className="space-y-4 text-muted-foreground">
-                        <FadeUp delay={0.2}>
-                            <p>
-                                Ingénieur logiciel et consultant indépendant, j’accompagne les entreprises
-                                dans la conception, le développement et l’évolution de leurs produits numériques.
-                                Mon objectif : transformer une idée ou un besoin métier en une solution
-                                opérationnelle, fiable et maintenable.
-                            </p>
-                        </FadeUp>
-                        <FadeUp delay={0.3}>
-                            <p>
-                                Polyvalent par nature, j’interviens à n'importe quelle étape du cycle de développement :
-                                analyse des besoins, architecture logicielle, développement logiciel,
-                                intégration d’APIs, automatisation des processus et déploiement cloud.
-                                J’accorde une attention particulière à la qualité du code, à la performance
-                                et à la scalabilité.
-                            </p>
-                        </FadeUp>
-                        <FadeUp delay={0.4}>
-                            <p>
-                                Curieux et orienté innovation, je travaille régulièrement sur des projets intégrant
-                                l’intelligence artificielle et l’expérimentation technique.
-                                J’aime explorer, prototyper rapidement et itérer pour construire des solutions
-                                pertinentes, alignées avec les enjeux réels du projet.
-                            </p>
-                        </FadeUp>
-                    </div>
-
-                    <FadeUp delay={0.5} className="glass rounded-2xl p-6 glow-border">
-                        <p className="font-medium text-foreground">
-                            Seul ou avec votre équipe, je m’implique comme un véritable partenaire technique :
-                            autonome, rigoureux et force de proposition. Mon rôle ne se limite pas à coder,
-                            mais à faire avancer le projet avec des choix techniques clairs, durables
-                            et orientés impact.
-                        </p>
-                    </FadeUp>
-                </div>
-                {/* Right Column - Highlights */}
-                <div className="grid sm:grid-cols-2 gap-6">
-                    {highlights.map((item, idx) => (
-                        <FadeUp key={idx} delay={((idx+1)*0.1)+0.1} className="glass p-6 rounded-2xl">
-                            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 hover:bg-primary/20 transition-colors">
-                                <item.icon className="w-6 h-6 text-primary" />
-                            </div>
-                            <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                            <p className="text-sm text-muted-foreground">{item.description}</p>
-                        </FadeUp>
-                    ))}
-                </div>
-            </div>
+export function About() {
+  const { t } = useI18n();
+  return (
+    <section
+      id="about"
+      className="interventions page-width"
+      aria-label={t.about.label}
+    >
+      <article className="intervention">
+        <UsersRound aria-hidden="true" size={28} />
+        <div>
+          <h2>{t.about.team}</h2>
+          <p className="service-purpose">{t.about.teamPurpose}</p>
+          <p>{t.about.teamCopy}</p>
         </div>
+      </article>
+      <article className="intervention">
+        <Settings2 aria-hidden="true" size={28} />
+        <div>
+          <h2>{t.about.project}</h2>
+          <p className="service-purpose">{t.about.projectPurpose}</p>
+          <p>{t.about.projectCopy}</p>
+        </div>
+      </article>
+      <div className="recent-career">
+        <ChartNoAxesColumnIncreasing aria-hidden="true" size={26} />
+        <div>
+          <h2>{t.about.career}</h2>
+          <ol>
+            {t.about.recent.map((item) => (
+              <li
+                key={item.name}
+                className={item.current ? "is-current" : undefined}
+              >
+                <time>{item.date}</time>
+                <span>
+                  <strong>{item.name}</strong>
+                  <small>{item.detail}</small>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
     </section>
+  );
 }
