@@ -1,90 +1,64 @@
-<div
-  style="
-    font-family: Outfit, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      sans-serif;
-    font-size: 14px;
-    background-color: #0f1418;
-    color: #f0f2f5;
-    padding: 24px;
-  "
->
-  <div style="margin-bottom: 16px; color: #98a0b3">
-    Vous avez reçu un message de
-    <strong style="color: #8b5cf6">{{name}}</strong>.
-  </div>
-
-  <div
-    style="
-      margin-top: 20px;
-      padding: 20px 0;
-      border-top: 1px dashed #242b32;
-      border-bottom: 1px dashed #242b32;
-    "
-  >
-    <table role="presentation" cellpadding="0" cellspacing="0">
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Nouveau message - Portfolio Pierre Clément</title>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #f4f6f9; color: #091638; font-family: Manrope, Arial, sans-serif; -webkit-text-size-adjust: 100%;">
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;">{{name}} vous a écrit depuis le portfolio.</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f6f9;">
       <tr>
-        <td style="vertical-align: top">
-          <div
-            role="img"
-            style="
-              padding: 10px 20px;
-              margin-right: 12px;
-              background-color: #1f2830;
-              border-radius: 12px;
-              font-size: 24px;
-              font-weight: 700;
-              color: #8b5cf6;
-            "
-          >
-            ?
-          </div>
-        </td>
-
-        <td style="vertical-align: top">
-          <div
-            style="
-              color: #f0f2f5;
-              font-size: 16px;
-              font-weight: 600;
-            "
-          >
-            {{name}}
-          </div>
-
-          <div
-            style="
-              color: #98a0b3;
-              font-size: 12px;
-              margin-bottom: 10px;
-            "
-          >
-            {{time}}
-          </div>
-
-          <div
-            style="
-              background-color: #141a1f;
-              padding: 14px 16px;
-              border-radius: 12px;
-              color: #f0f2f5;
-              font-size: 15px;
-              line-height: 1.5;
-            "
-          >
-            {{message}}
-          </div>
+        <td align="center" style="padding: 24px 12px;">
+          <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px; table-layout: fixed; background-color: #ffffff; border: 1px solid #d8dce4; border-radius: 16px;">
+            <tr>
+              <td style="padding: 28px 24px 24px; border-bottom: 1px solid #d8dce4;">
+                <a href="https://pierre-clement-oise.fr/" style="color: #091638; font-size: 23px; line-height: 30px; font-weight: 800; letter-spacing: -0.6px; text-decoration: none;">Pierre Clément<span style="color: #f44b0b;">.</span></a>
+                <p style="margin: 8px 0 0; color: #516079; font-size: 13px; line-height: 21px;">Conseil IT et développement sur mesure</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 28px 24px 0;">
+                <h1 style="margin: 0; color: #091638; font-size: 30px; line-height: 38px; font-weight: 800; letter-spacing: -0.6px;">Nouveau message<span style="color: #f44b0b;">.</span></h1>
+                <p style="margin: 10px 0 0; color: #516079; font-size: 15px; line-height: 24px;">Un contact depuis le formulaire du portfolio.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 28px 24px 24px;">
+                <h2 style="margin: 0 0 8px; color: #516079; font-size: 13px; line-height: 20px; font-weight: 600;">De la part de</h2>
+                <p style="margin: 0; color: #091638; font-size: 22px; line-height: 30px; font-weight: 700; overflow-wrap: anywhere; word-break: break-word;">{{name}}</p>
+                <p style="margin: 8px 0 0; font-size: 16px; line-height: 26px; overflow-wrap: anywhere; word-break: break-word;"><a href="mailto:{{email}}" style="color: #c83c0a; text-decoration: underline;">{{email}}</a></p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 24px;">
+                <h2 style="margin: 0; padding-top: 24px; border-top: 1px solid #d8dce4; color: #091638; font-size: 16px; line-height: 24px; font-weight: 700;">Son message</h2>
+                <div style="margin: 12px 0 0; color: #091638; font-size: 17px; line-height: 29px; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;">{{message}}</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 28px 24px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="center" bgcolor="#c83c0a" style="background-color: #c83c0a; border-radius: 6px; mso-padding-alt: 14px 22px;">
+                      <a href="mailto:{{email}}" style="display: inline-block; padding: 14px 22px; color: #ffffff; font-size: 16px; line-height: 24px; font-weight: 700; text-decoration: none;">Répondre au message</a>
+                    </td>
+                  </tr>
+                </table>
+                <p style="margin: 14px 0 0; color: #516079; font-size: 13px; line-height: 21px;">Vous pouvez aussi utiliser « Répondre » dans votre messagerie.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 20px 24px; border-top: 1px solid #d8dce4;">
+                <p style="margin: 0; color: #516079; font-size: 12px; line-height: 20px;">Notification du formulaire de contact</p>
+                <p style="margin: 4px 0 0; font-size: 13px; line-height: 21px; overflow-wrap: anywhere; word-break: break-word;"><a href="https://pierre-clement-oise.fr/" style="color: #c83c0a; text-decoration: underline;">pierre-clement-oise.fr</a></p>
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]></td></tr></table><![endif]-->
         </td>
       </tr>
     </table>
-  </div>
-
-  <div
-    style="
-      margin-top: 18px;
-      font-size: 12px;
-      color: #98a0b3;
-    "
-  >
-    — Notification envoyée depuis https://pierre-clement-oise.fr
-  </div>
-</div>
+  </body>
+</html>

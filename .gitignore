@@ -1,0 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.vite/
+dist
+dist-ssr
+static-pages
+*.local
+.env*
+!.env.example
+
+# Internal working records and portrait masters (public exports are in public/images)
+.impeccable/
+docs/privacy-register.json
+docs/legal-readiness.json
+assets/portraits/
+assets/provenance/
+.archive/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

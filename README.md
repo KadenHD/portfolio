@@ -20,7 +20,7 @@ This project showcases my work and skills as a developer. It is built with:
 
 ## CI/CD Workflow
 
-The site is automatically built and deployed whenever changes are pushed to the `dev` branch. The `main` branch is optional and contains only documentation (README/LICENSE).  
+The site is automatically built and deployed whenever changes are pushed to the `dev` branch. The `main` branch contains the documentation and the EmailJS notification template; it does not deploy the site.
 
 Below is a visual representation of the workflow:
 
@@ -32,8 +32,9 @@ Below is a visual representation of the workflow:
 2. GitHub Actions:
    - Checkout code
    - Install dependencies
-   - Build Vite app (`npm run build`)
-   - Prerender the `build/` folder (`npm run prerender`)
+   - Run lint and content tests
+   - Generate brand assets, build Vite and prerender French and English pages (`npm run prerender`)
+   - Run browser checks with EmailJS requests mocked
    - Upload `static-pages/` folder as artifact
    - Deploy to GitHub Pages
 3. GitHub Pages serves the site at your custom domain.
@@ -43,7 +44,7 @@ Below is a visual representation of the workflow:
 ## Branch Structure
 
 - **dev**: Source code, triggers build & deployment  
-- **main**: Optional, only README/LICENSE, not used for deployment  
+- **main**: Documentation and `emailjs.html`, not used for deployment
 
 ---
 
@@ -62,7 +63,8 @@ To run the project locally:
 ```bash
 git clone https://github.com/KadenHD/portfolio.git
 git checkout dev
-npm install
+nvm use
+npm ci
 npm run dev
 ```
 
@@ -78,8 +80,7 @@ To prerender locally:
 npm run prerender
 ```
 
-> [!NOTE]
-> This will previously auto-build.
+This generates the public brand assets, builds the app and prerenders both `/` and `/en/` into `static-pages/`.
 
 To run the project locally as production:
 
@@ -115,13 +116,21 @@ VITE_EMAILJS_PUBLIC_KEY=your_public_key
 These variables are stored as GitHub Actions Secrets and injected during the
 `npm run build` step of the CI/CD workflow.
 
+## EmailJS Notification Template
+
+The recipient-facing template is maintained in [`emailjs.html`](./emailjs.html) on `main`. It uses the portfolio’s white, navy and orange identity, with clear contact details, a readable multiline message and a reply link.
+
+Copy it into the EmailJS template editor and set **Reply To** to `{{email}}`. The form sends `name`, `email` and `message`; it does not send `time`. Updating this repository does not update the EmailJS dashboard automatically.
+
+See [the setup and verification guide](./docs/emailjs.md) for the subject, sender, recipient and test settings. The `.gitignore` also applies on `main` so local build files, dependencies, environment files and private working records stay excluded when switching branches.
+
 ---
 
 ## Notes
 
 - `dist/` and `static-pages/` are never committed; CI/CD handles deployment
 - CNAME file must be in `public/` for custom domain
-- `main` branch is safe to have README/LICENSE only
+- `main` maintains documentation and the EmailJS template independently of the deployed site
 
 ---
 
