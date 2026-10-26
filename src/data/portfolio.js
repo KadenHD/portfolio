@@ -1,3 +1,6 @@
+const nightingalePageUrl =
+  "https://www.facebook.com/people/Nightingale-Project-Johannes-Gutenberg-University-Mainz/61574771320906/";
+
 export const experiences = [
   {
     id: "weldom",
@@ -89,7 +92,7 @@ export const experiences = [
       "Déploiement de modèles via API REST et conteneurisation Docker ➔ déploiement 400% plus rapide et agnostique",
     ],
     links: [
-      { href: "https://nightingaleheart.com", label: "nightingaleheart.com" },
+      { href: nightingalePageUrl, label: "Nightingale Project" },
     ],
     technologies: [
       "Machine learning",
@@ -180,9 +183,8 @@ export const projects = [
       "Docker",
       "Git",
     ],
-    link: "https://www.nightingaleheart.com",
+    link: nightingalePageUrl,
     github: "https://github.com/Nico-Curti/Deepskin",
-    demo: "https://segmentation.nightingaleheart.com",
   },
   {
     id: "lynxjs",

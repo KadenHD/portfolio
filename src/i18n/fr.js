@@ -105,6 +105,7 @@ export default {
         purpose: "Une vraie mémoire pour les agents IA.",
         contribution:
           "J’ai contribué à la conception de l’architecture, au développement full-stack et des API, puis au déploiement cloud et à l’automatisation CI/CD.",
+        linkLabels: { github: "Client Python" },
       },
       {
         id: "nightingale",
@@ -112,7 +113,7 @@ export default {
         purpose: "Détecter et visualiser des blessures en 3D.",
         contribution:
           "J’ai intégré les modèles de détection, développé le traitement des images et conçu l’API pendant la phase de recherche en Allemagne.",
-        linkLabels: { github: "Modèle DeepSkin" },
+        linkLabels: { link: "Page Facebook", github: "Modèle DeepSkin" },
       },
       {
         id: "lynxjs",
@@ -120,6 +121,7 @@ export default {
         purpose: "Une base commune pour le web, le mobile et le desktop.",
         contribution:
           "J’ai contribué à une base de développement multiplateforme, avec intégration d’Electron et rechargement à chaud.",
+        linkLabels: { link: "Mon fil Reddit" },
       },
       {
         id: "dragnreceive",
