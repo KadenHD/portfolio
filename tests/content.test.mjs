@@ -50,6 +50,11 @@ test("All projects, all 54 tags and original links/assets are retained", () => {
     assert.ok(project.description.length > 100);
   });
   for (const catalog of [fr, en]) {
+    assert.deepEqual(
+      catalog.projects.summaries.map((summary) => summary.id),
+      catalog.data.projects.map((project) => project.id),
+      "Every project, including ONTBO, needs a card summary in display order",
+    );
     for (const summary of catalog.projects.summaries)
       assert.ok(
         catalog.data.projects.some((project) => project.id === summary.id),

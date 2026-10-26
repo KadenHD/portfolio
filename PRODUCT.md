@@ -16,6 +16,8 @@ Valoriser le parcours, les compétences et les réalisations de Pierre pour susc
 
 Le premier contact à mettre en avant est un échange sur le besoin par formulaire ou email. La présentation doit équilibrer réalisations concrètes et parcours professionnel.
 
+Les réalisations servent de preuves des contributions de Pierre. ONTBO partage le même format et la même hiérarchie que Nightingale Project, LynxJS et DragN’Receive, sous un titre commun. Rendre immédiatement lisible le besoin du projet et le rôle personnel de Pierre.
+
 Les missions à distance sont ouvertes à l’international. Ne pas limiter la zone d’intervention à la France dans les textes ou les métadonnées du site.
 
 ## Positioning

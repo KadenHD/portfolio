@@ -1,7 +1,7 @@
 import { useI18n } from "@/i18n/useI18n";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import circuit from "../../assets/plates/ontbo-assembly-refined.png";
-function ProjectLinks({ project, source }) {
+function ProjectLinks({ project, source, labels }) {
   const { t } = useI18n();
   const links = Object.entries(t.projects.links);
   return (
@@ -15,7 +15,7 @@ function ProjectLinks({ project, source }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {label}
+            {labels?.[key] ?? label}
             <ArrowUpRight size={16} aria-hidden="true" />
             <span className="sr-only">
               {" "}
@@ -30,57 +30,14 @@ export function Projects() {
   const { t } = useI18n();
   const { projects } = t.data;
   const summaries = t.projects.summaries;
-  const featured = projects.find((project) => project.id === "ontbo");
   return (
     <section
       id="projects"
       className="projects page-width"
-      aria-label={t.projects.label}
+      aria-labelledby="projects-title"
     >
-      <article className="featured-project" aria-labelledby="ontbo-title">
-        <div className="featured-copy">
-          <h2 id="ontbo-title">
-            {t.projects.titleStart}
-            <span className="accent">{t.projects.titleAccent}</span>
-            {t.projects.titleEnd}
-            <span className="accent">.</span>
-          </h2>
-          <p>{t.projects.intro}</p>
-          <p className="contribution">
-            <strong>{t.projects.contribution}</strong>{" "}
-            {t.projects.contributionCopy}
-          </p>
-          <ul className="project-tags" aria-label={t.common.technologies}>
-            {featured.tags.map((tag) => (
-              <li key={tag}>{tag}</li>
-            ))}
-          </ul>
-          <ProjectLinks project={featured} source="ONTBO" />
-          <details className="project-details">
-            <summary>
-              {t.common.more} <ArrowRight size={16} aria-hidden="true" />
-            </summary>
-            <p>{featured.description}</p>
-          </details>
-        </div>
-        <figure className="circuit-figure">
-          <div className="circuit-labels" aria-hidden="true">
-            {t.projects.circuitLabels.map((label) => (
-              <span key={label}>{label}</span>
-            ))}
-          </div>
-          <img
-            src={circuit}
-            width="1536"
-            height="1024"
-            alt={t.projects.circuitAlt}
-            decoding="async"
-          />
-          <figcaption>{t.projects.circuitCredit}</figcaption>
-        </figure>
-      </article>
       <div className="section-heading projects-heading">
-        <h2>
+        <h2 id="projects-title">
           {t.projects.title}
           <br />
           {t.projects.subtitle}
@@ -88,35 +45,53 @@ export function Projects() {
         </h2>
         <p>{t.projects.copy}</p>
       </div>
-      <div className="other-projects">
+      <div className="project-list">
         {summaries.map((summary, index) => {
           const project = projects.find((item) => item.id === summary.id);
           return (
             <article
               className="project-row"
-              key={summary.name}
+              key={summary.id}
               aria-labelledby={`project-${index}`}
             >
-              <div className="project-image">
-                <img
-                  src={project.image}
-                  width="800"
-                  height="450"
-                  alt={`${t.projects.preview} ${summary.name}`}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
+              <figure className="project-visual">
+                <div
+                  className={`project-image${summary.id === "ontbo" ? " project-image-concept" : ""}`}
+                >
+                  <img
+                    src={summary.id === "ontbo" ? circuit : project.image}
+                    width={summary.id === "ontbo" ? 1536 : 800}
+                    height={summary.id === "ontbo" ? 1024 : 450}
+                    alt={
+                      summary.id === "ontbo"
+                        ? t.projects.circuitAlt
+                        : `${t.projects.preview} ${summary.name}`
+                    }
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                {summary.id === "ontbo" && (
+                  <figcaption>{t.projects.circuitCredit}</figcaption>
+                )}
+              </figure>
               <div className="project-body">
                 <h3 id={`project-${index}`}>{summary.name}</h3>
                 <p className="project-purpose">{summary.purpose}</p>
-                <p>{summary.contribution}</p>
+                <p className="contribution">
+                  <strong>{t.projects.contribution}</strong>{" "}
+                  {summary.contribution}
+                </p>
                 <ul className="project-tags" aria-label={t.common.technologies}>
                   {project.tags.map((tag) => (
                     <li key={tag}>{tag}</li>
                   ))}
                 </ul>
-                <ProjectLinks project={project} source={summary.name} />
+                <ProjectLinks
+                  project={project}
+                  source={summary.name}
+                  labels={summary.linkLabels}
+                />
                 <details className="project-details">
                   <summary>
                     {t.common.more} <ArrowRight size={16} aria-hidden="true" />

@@ -195,6 +195,7 @@ async function layout(page, name) {
     );
   });
   const info = await page.evaluate(() => ({
+    locale: document.documentElement.lang,
     overflow: document.documentElement.scrollWidth > innerWidth,
     brokenImages: [...document.images]
       .filter((image) => image.complete && !image.naturalWidth)
@@ -203,11 +204,30 @@ async function layout(page, name) {
       (list) => list.children.length,
     ),
     headings: document.querySelectorAll("h1").length,
+    projectHeadings: document.querySelectorAll("#projects h2").length,
+    projectNames: [...document.querySelectorAll("#projects article h3")].map(
+      (heading) => heading.textContent,
+    ),
+    projectContributions: [...document.querySelectorAll("#projects article .contribution")].map(
+      (paragraph) => paragraph.textContent,
+    ),
   }));
   assert.equal(info.overflow, false, `${name}: horizontal overflow`);
   assert.deepEqual(info.brokenImages, [], `${name}: broken images`);
   assert.deepEqual(info.tagCounts, [13, 13, 13, 15]);
   assert.equal(info.headings, 1);
+  assert.equal(info.projectHeadings, 1, `${name}: one heading for all projects`);
+  const catalog = info.locale === "en" ? en : fr;
+  assert.deepEqual(
+    info.projectNames,
+    catalog.projects.summaries.map((summary) => summary.name),
+  );
+  assert.deepEqual(
+    info.projectContributions,
+    catalog.projects.summaries.map(
+      (summary) => `${catalog.projects.contribution} ${summary.contribution}`,
+    ),
+  );
   await checkExperiences(page, name);
   if (screenshots)
     await page.screenshot({
@@ -367,9 +387,9 @@ try {
       assert.equal(new URL(page.url()).hash, "#testimonials");
       await page.waitForFunction(() => {
         const top = document
-          .querySelector("#testimonials")
+          .querySelector("#testimonials h2")
           .getBoundingClientRect().top;
-        return top >= 0 && top < window.innerHeight / 2;
+        return Math.abs(top - 24) <= 2;
       });
       if (menuCollapsed)
         assert.equal(
@@ -401,8 +421,9 @@ try {
           (target) => {
             const top = document
               .querySelector(target)
+              .querySelector("h2, h3")
               .getBoundingClientRect().top;
-            return top >= 0 && top < window.innerHeight / 2;
+            return Math.abs(top - 24) <= 2;
           },
           {},
           hash,

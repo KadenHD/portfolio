@@ -68,9 +68,8 @@ spacing:
   xxl: "32px"
   wide: "40px"
   spacious: "48px"
-  section-mobile: "64px"
-  page-edge: "clamp(48px, 5vw, 80px)"
-  section: "clamp(64px, 7vw, 112px)"
+  section-mobile: "48px"
+  section: "clamp(48px, 5vw, 80px)"
 components:
   button-primary:
     backgroundColor: "{colors.action}"
@@ -183,9 +182,9 @@ Manrope est auto-hébergée dans `public/fonts/manrope-variable.ttf`, déclarée
 
 ## Layout
 
-Le conteneur commun mesure `min(1216px, calc(100% - 80px))`, centré. Sous 700 px, il conserve 20 px de marge de chaque côté. La page prend en charge une largeur minimale de 320 px. L’espacement des grandes sections suit le token `section`, avec 64 px sur les sections parcours et contact mobiles.
+Le conteneur commun mesure `min(1216px, calc(100% - 80px))`, centré. Sous 700 px, il conserve 20 px de marge de chaque côté. La page prend en charge une largeur minimale de 320 px. L’espacement des grandes sections suit un seul token `section` : `clamp(48px, 5vw, 80px)`, soit 48 px sur mobile et 72 px à 1440 px.
 
-Les compositions de bureau alignent des colonnes sur une grille éditoriale : accueil asymétrique, réalisation mise en avant en 5:7, lignes de projets en 5:6, dates et expérience en 1:2.6, contact en 1:1.15. Les séparateurs horizontaux cadrent les changements de sujet. Ce sont les compositions actuelles ; conserver leur logique d’alignement sans imposer ces rapports à toute nouvelle surface.
+Les compositions de bureau alignent des colonnes sur une grille éditoriale : accueil asymétrique, quatre lignes de projets en 5:6, dates et expérience en 1:2.6, contact en 1:1.15. Les séparateurs horizontaux cadrent les changements de sujet. Ce sont les compositions actuelles ; conserver leur logique d’alignement sans imposer ces rapports à toute nouvelle surface.
 
 Les seuils observés sont 1100 px pour le compactage intermédiaire, 700 px pour le passage mobile, et 1440 px pour les ajustements de grand écran. Sur mobile, les colonnes principales s’empilent, les liens restent visibles, le bouton principal de l’accueil s’étend, et la navigation s’ouvre dans un panneau sous l’en-tête. Les paires de champs deviennent une colonne. Les choix éditoriaux propres à la page sont consignés dans `.impeccable/surfaces/src-app-jsx.md`.
 
@@ -202,7 +201,7 @@ Les sections de lecture et les lignes de projets restent planes, sans ombre. Les
 
 ## Shapes
 
-La forme dominante reste rectiligne. Les réalisations « D’autres terrains » ont un contour de 1 px en encre marine, orange au survol ou au focus interne, et un arrondi de 12 px. Les boutons possèdent un arrondi modéré, les champs un arrondi plus discret et le dialogue un arrondi plus ample, selon les tokens. Le cercle sert les commandes de témoignage et les avatars. Les bordures structurelles mesurent 1 px. Les icônes sont des tracés simples cohérents avec Lucide, à taille contenue.
+La forme dominante reste rectiligne. Les quatre cartes de réalisations ont un contour de 1 px en encre marine, orange au survol ou au focus interne, et un arrondi de 12 px. Les boutons possèdent un arrondi modéré, les champs un arrondi plus discret et le dialogue un arrondi plus ample, selon les tokens. Le cercle sert les commandes de témoignage et les avatars. Les bordures structurelles mesurent 1 px. Les icônes sont des tracés simples cohérents avec Lucide, à taille contenue.
 
 ## Components
 
@@ -234,13 +233,19 @@ Les trois boutons sociaux restent à droite et mesurent 44 × 44 px. Lorsque la 
 
 À 375 px et moins, les badges ont des marges latérales de 12 px et un espacement minimal de 6 px pour conserver « +5 années » et les trois réseaux sur une ligne jusqu’à 320 px.
 
-L’espace supérieur du hero et l’espace inférieur du contact utilisent le token `page-edge` : `clamp(48px, 5vw, 80px)`, soit 48 px sur mobile et 72 px à 1440 px. Ces marges sont plus compactes que celles des grandes sections internes. L’espace après le hero correspond à celui qui suit le bloc régie / forfait / parcours : 44 px sur ordinateur, 48 px sous 700 px.
+Le même token `section` pilote les espaces avant et après le hero, après le bloc régie / forfait / parcours, entre les réalisations et le parcours, autour des avis et de la localisation/FAQ, puis autour du contact et avant le footer. Les séparateurs ou changements de fond peuvent avoir une marge de chaque côté, chacune issue du même token. Le bloc régie / forfait / parcours conserve ses espacements internes de 26 px. Les valeurs mobiles spécifiques de 64 px et les anciennes marges d’introduction de 44 px sont supprimées.
+
+Les liens d’ancre du menu et du footer alignent le début du titre à 24 px du haut de la fenêtre, en compensant l’espacement interne supérieur de la section avec `scroll-margin-top`. Le token local `--section-top-space` pilote à la fois le padding et cette compensation, y compris sur mobile. L’en-tête des réalisations est aligné par le haut pour que la longueur du paragraphe voisin ne décale pas son titre. Les ancres FAQ et expériences détaillées, placées au début de leur contenu, gardent la marge globale de 24 px. Au bas de la page, le navigateur peut s’arrêter avant cet alignement lorsqu’il n’y a plus de contenu à faire défiler.
 
 Dans le bloc régie / forfait / parcours, chaque icône est centrée verticalement sur la première ligne du titre. Son décalage dépend de la hauteur de ligne du titre et de sa propre taille (28 px pour les offres, 26 px pour le parcours), y compris quand le titre revient à la ligne sur mobile.
 
 ### Project rows and tags
 
-Chaque réalisation est structurée par une image, un titre, une courte finalité, une contribution et des liens visibles, dans un contour de 1 px et un espacement intérieur de 24 px (18 px sur mobile). Les liens disponibles sont regroupés une seule fois sous la présentation, avec une cible de 44 px minimum. L’image garde un ratio de 16:10, sans commande superposée ni effet de zoom au survol. Les domaines sont des mots discrets séparés par des barres obliques, sans pastilles de fond. Le complément utilise un élément `details` natif et une flèche qui pivote à l’ouverture.
+Les quatre réalisations sont réunies sous un seul titre : « Le sur-mesure, en pratique. » / “Custom software, in practice.” ONTBO, Nightingale Project, LynxJS et DragN’Receive utilisent la même carte horizontale, image à gauche et texte à droite. Sur mobile, l’image précède le texte. ONTBO est le premier exemple de contribution de Pierre, avec la même hiérarchie que les autres réalisations.
+
+Chaque réalisation est structurée par une image, un titre, une courte finalité, un paragraphe introduit par « Ma contribution : » / “My contribution:” et des liens visibles, dans un contour de 1 px et un espacement intérieur de 24 px (18 px sur mobile). Les contextes de recherche, contribution technique et prototype étudiant sont explicites dans les textes. Les liens disponibles sont regroupés une seule fois sous la présentation, avec une cible de 44 px minimum. Le lien GitHub de Nightingale désigne le modèle DeepSkin utilisé dans le projet.
+
+L’image garde un ratio de 16:10, sans commande superposée ni effet de zoom au survol. Le schéma conceptuel ONTBO est contenu entièrement dans ce cadre sur fond blanc, avec sa légende HTML « Illustration conceptuelle » / “Conceptual illustration”. Toutes les phrases de finalité utilisent l’encre marine, y compris « vraie » / “Real” pour ONTBO. Les domaines sont des mots discrets séparés par des barres obliques, sans pastilles de fond. Toutes les technologies existantes sont conservées. Le complément utilise un élément `details` natif et une flèche qui pivote à l’ouverture.
 
 ### Testimonial controls
 

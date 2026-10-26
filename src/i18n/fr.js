@@ -83,21 +83,13 @@ export default {
   },
   projects: {
     label: "Mes réalisations",
-    titleStart: "ONTBO - Donner une ",
-    titleAccent: "vraie",
-    titleEnd: " mémoire aux agents IA",
-    intro:
-      "Une plateforme qui permet aux agents IA de capitaliser sur leurs échanges, d’exploiter le contexte et de restituer des réponses plus pertinentes dans la durée.",
     contribution: "Ma contribution :",
-    contributionCopy:
-      "conception de l’architecture, développement full-stack et des API, puis déploiement cloud et automatisation CI/CD.",
-    circuitLabels: ["Échanges", "Mémoire & contexte", "Agents IA"],
     circuitAlt:
       "Vue éclatée conceptuelle : les échanges alimentent des couches de mémoire et de contexte, reliées aux agents IA.",
     circuitCredit: "Illustration conceptuelle",
-    title: "D’autres terrains.",
-    subtitle: "La même exigence",
-    copy: "De la recherche aux applications métier, des contributions concrètes dans des contextes différents.",
+    title: "Le sur-mesure,",
+    subtitle: "en pratique",
+    copy: "Applications métier, recherche et contributions techniques : quelques réalisations qui illustrent mon approche, du besoin initial à la solution.",
     preview: "Aperçu du projet",
     github: "Explorer aussi mes contributions sur GitHub",
     links: {
@@ -108,25 +100,33 @@ export default {
     },
     summaries: [
       {
+        id: "ontbo",
+        name: "ONTBO",
+        purpose: "Une vraie mémoire pour les agents IA.",
+        contribution:
+          "J’ai contribué à la conception de l’architecture, au développement full-stack et des API, puis au déploiement cloud et à l’automatisation CI/CD.",
+      },
+      {
         id: "nightingale",
         name: "Nightingale Project",
-        purpose: "Repérer des blessures sur des scans 3D.",
+        purpose: "Détecter et visualiser des blessures en 3D.",
         contribution:
-          "Intégration de modèles de détection, traitement des images et conception d’une API pendant la phase de recherche en Allemagne.",
+          "J’ai intégré les modèles de détection, développé le traitement des images et conçu l’API pendant la phase de recherche en Allemagne.",
+        linkLabels: { github: "Modèle DeepSkin" },
       },
       {
         id: "lynxjs",
         name: "LynxJS",
-        purpose: "Un même projet, plusieurs plateformes.",
+        purpose: "Une base commune pour le web, le mobile et le desktop.",
         contribution:
-          "Contribution à une base de développement web, mobile et desktop, avec intégration d’Electron et rechargement à chaud.",
+          "J’ai contribué à une base de développement multiplateforme, avec intégration d’Electron et rechargement à chaud.",
       },
       {
         id: "dragnreceive",
         name: "DragN’Receive",
         purpose: "Rapprocher commerces locaux et habitants.",
         contribution:
-          "Prototype étudiant de Click & Collect à l’échelle d’une agglomération, pour démontrer la faisabilité d’un service de proximité.",
+          "J’ai participé à un prototype étudiant de Click & Collect pour démontrer la faisabilité d’un service de proximité.",
       },
     ],
   },

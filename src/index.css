@@ -16,9 +16,7 @@
   --accent: #c83c0a;
   --line: #d8dce4;
   --soft: #f4f6f9;
-  --space: clamp(64px, 7vw, 112px);
-  --page-edge-space: clamp(48px, 5vw, 80px);
-  --intro-section-gap: 44px;
+  --space: clamp(48px, 5vw, 80px);
 }
 * {
   box-sizing: border-box;
@@ -26,6 +24,9 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 24px;
+}
+main > section[id] {
+  scroll-margin-top: calc(-1 * var(--section-top-space, 0px));
 }
 body {
   margin: 0;
@@ -233,7 +234,7 @@ svg {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
   gap: clamp(48px, 8vw, 130px);
-  padding-block: var(--page-edge-space) var(--intro-section-gap);
+  padding-block: var(--space);
 }
 .hero h1 {
   font-size: clamp(54px, 5.4vw, 82px);
@@ -517,51 +518,19 @@ svg {
   margin-top: 3px;
 }
 .projects {
-  padding-top: var(--intro-section-gap);
-}
-.featured-project {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: 28px;
-  align-items: center;
-}
-.featured-copy h2 {
-  font-size: clamp(28px, 2.25vw, 35px);
-  line-height: 1.15;
-  margin-bottom: 14px;
-}
-.featured-copy > p {
-  font-size: 15px;
-  line-height: 1.65;
-  max-width: 58ch;
-}
-.featured-copy .contribution {
-  margin-top: 24px;
-  font-size: 13px;
+  --section-top-space: var(--space);
+  padding-top: var(--section-top-space);
 }
 .contribution strong {
   color: var(--ink);
 }
-.circuit-figure {
-  position: relative;
+.project-visual,
+.project-body {
   min-width: 0;
 }
-.circuit-labels {
-  display: flex;
-  justify-content: space-between;
-  padding: 0 22px 12px;
-  font-size: 12px;
-  font-weight: 650;
-  gap: 12px;
-}
-.circuit-figure img {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: contain;
-}
-.circuit-figure figcaption {
+.project-visual figcaption {
   text-align: right;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   padding-top: 10px;
 }
@@ -605,20 +574,18 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   flex-shrink: 0;
 }
 .projects-heading {
-  padding-top: var(--space);
-  margin-top: 44px;
-  border-top: 1px solid var(--line);
+  align-items: flex-start;
 }
 .projects-heading > p {
   max-width: 36ch;
 }
-.other-projects {
+.project-list {
   display: grid;
   gap: 24px;
 }
 .project-row {
   display: grid;
-  grid-template-columns: 5fr 6fr;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
   gap: clamp(32px, 6vw, 90px);
   align-items: center;
   padding: 24px;
@@ -639,6 +606,12 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   width: 100%;
   aspect-ratio: 16/10;
   object-fit: cover;
+}
+.project-image-concept {
+  background: #fff;
+}
+.project-image-concept img {
+  object-fit: contain;
 }
 .project-body h3 {
   font-size: 28px;
@@ -693,7 +666,8 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   margin-top: 14px;
 }
 .experience-section {
-  padding-block: var(--space);
+  --section-top-space: var(--space);
+  padding-block: var(--section-top-space);
 }
 .experience-list {
   padding: 0;
@@ -803,8 +777,9 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   max-width: 70ch;
 }
 .testimonials-section {
+  --section-top-space: var(--space);
   background: var(--soft);
-  padding-block: 72px;
+  padding-block: var(--section-top-space);
 }
 .testimonial-layout {
   display: grid;
@@ -873,7 +848,8 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   margin-top: 4px;
 }
 .service-areas {
-  padding-block: var(--space);
+  --section-top-space: var(--space);
+  padding-block: var(--section-top-space);
   border-bottom: 1px solid var(--line);
 }
 .local-presence {
@@ -966,7 +942,8 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   }
 }
 .contact-section {
-  padding-block: var(--space) var(--page-edge-space);
+  --section-top-space: var(--space);
+  padding-block: var(--section-top-space);
   display: grid;
   grid-template-columns: 1fr 1.15fr;
   gap: clamp(40px, 8vw, 120px);
@@ -1348,9 +1325,6 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   .intervention:nth-child(2) {
     border: 0;
   }
-  .featured-project {
-    grid-template-columns: 1fr 1.2fr;
-  }
   .testimonial-layout {
     gap: 40px;
   }
@@ -1410,9 +1384,6 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   }
 }
 @media (max-width: 700px) {
-  :root {
-    --intro-section-gap: 48px;
-  }
   .page-width {
     width: calc(100% - 40px);
   }
@@ -1517,40 +1488,12 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   .recent-career small {
     font-size: 11px;
   }
-  .featured-project {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    align-items: stretch;
-  }
-  .featured-copy h2 {
-    font-size: 29px;
-    max-width: 24ch;
-  }
-  .featured-copy > p {
-    font-size: 15px;
-  }
-  .featured-copy .contribution {
-    font-size: 13px;
-    margin-top: 20px;
-  }
   .project-links {
     gap: 2px 18px;
   }
   .project-links a {
     font-size: 12px;
     min-height: 44px;
-  }
-  .circuit-labels {
-    font-size: 10px;
-    padding-inline: 0;
-    gap: 5px;
-  }
-  .circuit-figure img {
-    width: 100%;
-  }
-  .circuit-figure figcaption {
-    font-size: 10px;
   }
   .section-heading {
     display: block;
@@ -1564,11 +1507,6 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   .section-heading > .text-link {
     margin-top: 20px;
   }
-  .projects-heading {
-    padding-top: 56px;
-    margin-top: 48px;
-  }
-  .projects-heading h2,
   h2 {
     font-size: 32px;
   }
@@ -1599,9 +1537,6 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   .github-link {
     font-size: 12px;
     gap: 12px;
-  }
-  .experience-section {
-    padding-block: 64px;
   }
   .experience-entry {
     grid-template-columns: 1fr;
@@ -1635,9 +1570,6 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   .education p {
     font-size: 14px;
   }
-  .testimonials-section {
-    padding-block: 48px;
-  }
   .testimonial-layout {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -1658,7 +1590,6 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
   .contact-section {
     grid-template-columns: 1fr;
     gap: 36px;
-    padding-block: 64px var(--page-edge-space);
   }
   .contact-copy h2 {
     font-size: 39px;

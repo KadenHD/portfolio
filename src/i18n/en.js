@@ -87,21 +87,13 @@ export default {
   },
   projects: {
     label: "My projects",
-    titleStart: "ONTBO - Giving AI agents ",
-    titleAccent: "real",
-    titleEnd: " memory",
-    intro:
-      "A platform that enables AI agents to build on their exchanges, use context and provide more relevant responses over time.",
     contribution: "My contribution:",
-    contributionCopy:
-      "architecture design, full-stack and API development, followed by cloud deployment and CI/CD automation.",
-    circuitLabels: ["Exchanges", "Memory & context", "AI agents"],
     circuitAlt:
       "Conceptual exploded view: exchanges feed memory and context layers connected to AI agents.",
     circuitCredit: "Conceptual illustration",
-    title: "Different fields.",
-    subtitle: "The same commitment",
-    copy: "From research to business applications, hands-on contributions in different contexts.",
+    title: "Custom software,",
+    subtitle: "in practice",
+    copy: "Business applications, research and technical contributions: selected projects that illustrate my approach, from the initial need to the solution.",
     preview: "Project preview:",
     github: "Explore my other contributions on GitHub",
     links: {
@@ -112,25 +104,33 @@ export default {
     },
     summaries: [
       {
+        id: "ontbo",
+        name: "ONTBO",
+        purpose: "Real memory for AI agents.",
+        contribution:
+          "I contributed to architecture design, full-stack and API development, followed by cloud deployment and CI/CD automation.",
+      },
+      {
         id: "nightingale",
         name: "Nightingale Project",
-        purpose: "Detecting wounds in 3D scans.",
+        purpose: "Detecting and visualising wounds in 3D.",
         contribution:
-          "Integrating detection models, processing images and designing an API during the research phase in Germany.",
+          "I integrated detection models, developed image processing and designed the API during the research phase in Germany.",
+        linkLabels: { github: "DeepSkin model" },
       },
       {
         id: "lynxjs",
         name: "LynxJS",
-        purpose: "One project, multiple platforms.",
+        purpose: "A shared foundation for web, mobile and desktop.",
         contribution:
-          "Contributing to a foundation for web, mobile and desktop development, with Electron integration and hot reload.",
+          "I contributed to a cross-platform development foundation, with Electron integration and hot reload.",
       },
       {
         id: "dragnreceive",
         name: "DragN’Receive",
         purpose: "Connecting local retailers and residents.",
         contribution:
-          "A student Click & Collect prototype across an urban area, demonstrating the feasibility of a local service.",
+          "I contributed to a student Click & Collect prototype to demonstrate the feasibility of a local service.",
       },
     ],
   },
