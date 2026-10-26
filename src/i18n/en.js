@@ -40,7 +40,6 @@ export default {
     cta: "Let’s discuss your project",
     career: "Explore my experience",
     alt: "Pierre Clément, freelance software engineer",
-    years: "years of experience",
     yearsShort: "years",
     experienceLabel: "More than {years} years of experience",
     socials: "Professional profiles",
@@ -86,7 +85,6 @@ export default {
     ],
   },
   projects: {
-    label: "My projects",
     contribution: "My contribution:",
     circuitLabels: ["Exchanges", "Memory & context", "AI agents"],
     circuitAlt:

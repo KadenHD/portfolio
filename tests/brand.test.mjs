@@ -14,6 +14,23 @@ function pngSize(png) {
   return [png.readUInt32BE(16), png.readUInt32BE(20)];
 }
 
+test("The public ONTBO illustration excludes private generation metadata", async () => {
+  const png = await readFile(
+    new URL("../assets/plates/ontbo-assembly-refined.png", import.meta.url),
+  );
+  assert.deepEqual(pngSize(png), [1536, 1024]);
+  for (let offset = 8; offset < png.length;) {
+    const length = png.readUInt32BE(offset);
+    const type = png.toString("ascii", offset + 4, offset + 8);
+    assert.ok(offset + length + 12 <= png.length, "Invalid PNG chunk");
+    assert.ok(
+      !["tEXt", "zTXt", "iTXt", "eXIf"].includes(type),
+      `Public illustration must not include ${type} metadata`,
+    );
+    offset += length + 12;
+  }
+});
+
 test("Share previews have the declared social dimensions and distinct languages", async () => {
   const [fr, en, legacy] = await Promise.all(
     ["images/social-fr.png", "images/social-en.png", "preview.png"].map(

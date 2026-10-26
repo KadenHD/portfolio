@@ -21,12 +21,9 @@ export const metadata = {
     role: "Ingénieur logiciel indépendant",
     headline: ["Votre besoin.", "Le bon logiciel."],
     offer: "Conseil IT & développement sur mesure",
-    terms:
-      "En régie ou au forfait · Oise, Hauts-de-France, Île-de-France et à distance",
     imageAlt:
       "Pierre Clément, ingénieur logiciel indépendant. Conseil IT et développement sur mesure : full-stack, DevOps, architecture, IA et R&D.",
     ogLocale: "fr_FR",
-    area: "Oise, Compiègne, Beauvais, Hauts-de-France et Île-de-France ; à distance à l’international",
     serviceType: [
       "Développement logiciel sur mesure",
       "Conseil IT",
@@ -47,12 +44,9 @@ export const metadata = {
     role: "Freelance Software Engineer",
     headline: ["Your needs.", "The right software."],
     offer: "IT consulting & custom software development",
-    terms:
-      "Team support or fixed-price projects · Oise, Hauts-de-France, Île-de-France and remotely",
     imageAlt:
       "Pierre Clément, freelance software engineer. IT consulting and custom software development: full-stack, DevOps, architecture, AI and R&D.",
     ogLocale: "en_GB",
-    area: "Oise, Compiègne, Beauvais, Hauts-de-France and Île-de-France; remote collaboration internationally",
     serviceType: [
       "Custom software development",
       "IT consulting",

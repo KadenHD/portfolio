@@ -28,6 +28,6 @@ Le workflow du dépôt privé génère les PDF et synchronise uniquement `README
 - FR : `https://raw.githubusercontent.com/KadenHD/KadenHD/main/CV_Pierre_Clement.pdf`
 - EN : `https://raw.githubusercontent.com/KadenHD/KadenHD/main/CV_Pierre_Clement_EN.pdf`
 
-La préparation locale ne crée pas le dépôt GitHub privé, les paramètres de l’App ou les secrets Actions, et ne pousse aucun commit. La procédure d’activation est dans `../personal-branding/docs/publication.md`. LinkedIn et Malt restent mis à jour manuellement.
+L’automatisation du profil est définie dans le dépôt privé. Ses paramètres GitHub App et secrets Actions se configurent sur GitHub et ne sont pas copiés dans le portfolio. La procédure d’exploitation est dans `../personal-branding/docs/publication.md`. LinkedIn et Malt restent mis à jour manuellement.
 
 Les scripts `brand-assets.mjs` et `social-card-template.mjs` restent dans le portfolio : `npm run brand` et le prérendu continuent à générer les ressources publiques du site sans accès au dépôt privé.

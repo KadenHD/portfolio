@@ -186,7 +186,7 @@ Le conteneur commun mesure `min(1216px, calc(100% - 80px))`, centré. Sous 700 p
 
 Les compositions de bureau alignent des colonnes sur une grille éditoriale : accueil asymétrique, quatre lignes de projets en 5:6, dates et expérience en 1:2.6, contact en 1:1.15. Les séparateurs horizontaux cadrent les changements de sujet. Ce sont les compositions actuelles ; conserver leur logique d’alignement sans imposer ces rapports à toute nouvelle surface.
 
-Les seuils observés sont 1100 px pour le compactage intermédiaire, 700 px pour le passage mobile, et 1440 px pour les ajustements de grand écran. Sur mobile, les colonnes principales s’empilent, les liens restent visibles, le bouton principal de l’accueil s’étend, et la navigation s’ouvre dans un panneau sous l’en-tête. Les paires de champs deviennent une colonne. Les choix éditoriaux propres à la page sont consignés dans `.impeccable/surfaces/src-app-jsx.md`.
+Les seuils observés sont 1100 px pour le compactage intermédiaire, 700 px pour le passage mobile, et 1440 px pour les ajustements de grand écran. Sur mobile, les colonnes principales s’empilent, les liens restent visibles, le bouton principal de l’accueil s’étend, et la navigation s’ouvre dans un panneau sous l’en-tête. Les paires de champs deviennent une colonne. Ce document définit les règles de composition ; `PRODUCT.md` porte le positionnement et les contraintes de contenu.
 
 ## Elevation & Depth
 

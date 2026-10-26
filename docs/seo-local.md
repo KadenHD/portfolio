@@ -1,4 +1,4 @@
-# Référencement local - mise en œuvre du 20 octobre 2026
+# Référencement local - suivi au 26 octobre 2026
 
 ## Positionnement retenu
 
@@ -18,7 +18,7 @@ Paris est une domiciliation administrative. Aucun bureau à Compiègne ou Beauva
 - Titres et descriptions, URL canoniques, alternatives FR/EN/x-default, Open Graph et Twitter adaptés à chaque langue. Sitemap ramené aux deux URL principales ; `robots.txt`, prérendu et CI alignés.
 - Aucun outil de suivi ajouté. Search Console existe pour le domaine ; aucune nouvelle balise de vérification n’est requise pour ces changements dans la même propriété.
 
-## URL à contrôler après publication autorisée
+## URL publiques à contrôler
 
 | Contenu | Français | Anglais |
 | --- | --- | --- |
@@ -26,11 +26,11 @@ Paris est une domiciliation administrative. Aucun bureau à Compiègne ou Beauva
 | Proximité | `/#service-areas` | `/en/#service-areas` |
 | FAQ | `/#faq` | `/en/#faq` |
 
-Les ancres ne sont pas des pages distinctes à soumettre dans le sitemap. Le site public vérifié le 20 octobre 2026 affiche encore l’ancienne version française ; `/en/` répondait 404 et le sitemap public contenait une seule URL. Ces changements restent locaux tant qu’aucun déploiement n’est autorisé.
+Les ancres ne sont pas des pages distinctes à soumettre dans le sitemap. Le contrôle public du 26 octobre 2026 confirme des réponses HTTP 200 pour `/` en français, `/en/` en anglais, `robots.txt` et `sitemap.xml`. Le sitemap public contient les deux URL principales et `robots.txt` le déclare. Ce contrôle d’accessibilité ne démontre pas que Google a indexé les deux pages.
 
 ## Google Search Console : propriété de domaine déjà existante
 
-Après le déploiement :
+Après chaque déploiement :
 
 1. Ouvrir la propriété de domaine `pierre-clement-oise.fr`.
 2. Dans Sitemaps, vérifier le traitement de `https://pierre-clement-oise.fr/sitemap.xml`. Si cette adresse n’est pas encore soumise, la soumettre. Si elle existe déjà, contrôler sa prochaine lecture et ses erreurs éventuelles.
@@ -80,7 +80,7 @@ Les liens d’identité du site incluent LinkedIn, GitHub, Pappers, Malt et la p
 
 La consolidation est vérifiée avec les commandes du dépôt : lint, tests, build, prérendu FR/EN et recette navigateur. Les contrôles couvrent les métadonnées, les zones desservies, le sitemap à deux URL, les liens internes, la présence complète des cinq réponses et l’ouverture/fermeture de la FAQ au clavier. Le contrôle responsive porte sur les largeurs 1440/1024/768/701/390/320 px. Les captures de cette recette restent hors du dépôt dans `/tmp/portfolio-local-faq-checks/`.
 
-Ces contrôles locaux ne constituent ni une validation de l’indexation par Google, ni une mesure de classement, ni l’exécution du workflow sur GitHub. Aucun commit, push ou déploiement réalisé.
+Ces contrôles locaux ne constituent ni une validation de l’indexation par Google, ni une mesure de classement. Les commandes de recette ne publient pas le site ; le workflow GitHub Pages est déclenché séparément par un push sur `dev`.
 
 ## Sources
 

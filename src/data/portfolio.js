@@ -142,7 +142,6 @@ export const projects = [
     title: "ONTBO ✦ Couche de Mémoire et de Contexte pour Agents IA",
     description:
       "En conservant et en structurant l’information issue des échanges précédents, ONTBO permet aux agents IA d’être plus cohérents, personnalisés et adaptatifs dans leurs interactions avec les utilisateurs ou dans l’exécution de tâches complexes. J’ai participé au développement complet de l'outil, de sa conception jusqu'à la mise en production.",
-    image: "/projects/ontbo.webp",
     tags: [
       "Innovation",
       "R&D",

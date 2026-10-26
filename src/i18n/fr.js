@@ -36,7 +36,6 @@ export default {
     cta: "Discutons de votre projet",
     career: "Voir mon parcours",
     alt: "Pierre Clément, ingénieur logiciel indépendant",
-    years: "années d’expérience",
     yearsShort: "années",
     experienceLabel: "Plus de {years} années d’expérience",
     socials: "Liens professionnels",
@@ -82,7 +81,6 @@ export default {
     ],
   },
   projects: {
-    label: "Mes réalisations",
     contribution: "Ma contribution :",
     circuitLabels: ["Échanges", "Mémoire & contexte", "Agents IA"],
     circuitAlt:
