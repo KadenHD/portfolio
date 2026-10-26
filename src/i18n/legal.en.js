@@ -6,7 +6,7 @@ const contactLinks = [
 ];
 
 export const englishLegalNotice = [
-  { texts: ["Last updated: 21 October 2026."] },
+  { texts: ["Last updated: 26 October 2026."] },
   {
     title: "Website publisher",
     texts: [
@@ -21,6 +21,22 @@ export const englishLegalNotice = [
     links: [...contactLinks, { href: business.site, text: business.site }],
   },
   { title: "Publication director", texts: [business.name] },
+  {
+    title: "Consumer dispute mediation",
+    texts: [
+      "Under the provisions of the French Consumer Code on consumer dispute mediation, after contacting me and if you are not satisfied with my response, you may refer your consumer dispute free of charge to:",
+      "CM2C",
+      "49 rue de Ponthieu, 75008 Paris, France",
+    ],
+    links: [
+      { href: "tel:+33189470014", text: "Phone: +33 1 89 47 00 14" },
+      {
+        href: "https://www.cm2c.net/declarer-un-litige.php",
+        text: "Website: submit a dispute to CM2C",
+      },
+      { href: "mailto:litiges@cm2c.net", text: "Email: litiges@cm2c.net" },
+    ],
+  },
   {
     title: "Hosting",
     texts: [
@@ -66,7 +82,7 @@ export const englishLegalNotice = [
 export const englishPrivacyPolicy = [
   {
     texts: [
-      "Last updated: 21 October 2026.",
+      "Last updated: 26 October 2026.",
       "This policy explains the processing of data associated with browsing the portfolio, contact enquiries and appointment booking.",
     ],
   },

@@ -1259,6 +1259,9 @@ a[href^="tel:"]:is(:hover, :focus-visible) {
 .legal-content a {
   text-decoration: underline;
 }
+.legal-content a:is(:hover, :focus-visible) {
+  color: var(--accent);
+}
 .legal-identifier {
   white-space: nowrap;
 }

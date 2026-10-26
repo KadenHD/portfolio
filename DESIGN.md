@@ -212,7 +212,7 @@ Actions franches, compactes et lisibles. Le bouton principal utilise les tokens 
 
 ### Text links
 
-Liens explicites, soulignés avec un décalage de 5 px et une épaisseur de 1 px. Leur hauteur minimale commune est de 44 px, avec 20 px entre texte et icône. Le survol et le focus clavier adoptent l’orange action, y compris pour les emails, téléphones et URL de projets. Les liens des réalisations restent visibles au repos ; ils ne dépendent pas du survol d’une image.
+Liens explicites, soulignés avec un décalage de 5 px et une épaisseur de 1 px. Leur hauteur minimale commune est de 44 px, avec 20 px entre texte et icône. Le survol et le focus clavier adoptent l’orange action, y compris pour les emails, téléphones et URL de projets. Tous les liens du contenu des mentions légales et de la politique de confidentialité suivent cette règle, dans les deux langues. Les liens des réalisations restent visibles au repos ; ils ne dépendent pas du survol d’une image.
 
 ### Inputs / Fields
 

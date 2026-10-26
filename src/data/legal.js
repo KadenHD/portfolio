@@ -1,4 +1,4 @@
-export const legalUpdatedAt = "21 octobre 2026";
+export const legalUpdatedAt = "26 octobre 2026";
 
 export const business = {
   name: "Pierre Clément",
@@ -49,6 +49,22 @@ export const legalNotice = [
     links: [...contactLinks, { href: business.site, text: business.site }],
   },
   { title: "Directeur de la publication", texts: [business.name] },
+  {
+    title: "Médiation de la consommation",
+    texts: [
+      "Conformément aux dispositions du Code de la consommation concernant le processus de médiation des litiges de la consommation, après m’avoir sollicité et à défaut de réponse vous satisfaisant, vous avez la possibilité de recourir gratuitement à une procédure de médiation de la consommation auprès de :",
+      "CM2C",
+      "49 rue de Ponthieu, 75008 Paris, France",
+    ],
+    links: [
+      { href: "tel:+33189470014", text: "Téléphone : +33 1 89 47 00 14" },
+      {
+        href: "https://www.cm2c.net/declarer-un-litige.php",
+        text: "Site internet : déclarer un litige auprès de CM2C",
+      },
+      { href: "mailto:litiges@cm2c.net", text: "Email : litiges@cm2c.net" },
+    ],
+  },
   {
     title: "Hébergement",
     texts: [
