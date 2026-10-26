@@ -84,6 +84,7 @@ export default {
   projects: {
     label: "Mes réalisations",
     contribution: "Ma contribution :",
+    circuitLabels: ["Échanges", "Mémoire & contexte", "Agents IA"],
     circuitAlt:
       "Vue éclatée conceptuelle : les échanges alimentent des couches de mémoire et de contexte, reliées aux agents IA.",
     circuitCredit: "Illustration conceptuelle",

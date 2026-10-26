@@ -55,6 +55,13 @@ export function Projects() {
               aria-labelledby={`project-${index}`}
             >
               <figure className="project-visual">
+                {summary.id === "ontbo" && (
+                  <div className="circuit-labels" aria-hidden="true">
+                    {t.projects.circuitLabels.map((label) => (
+                      <span key={label}>{label}</span>
+                    ))}
+                  </div>
+                )}
                 <div
                   className={`project-image${summary.id === "ontbo" ? " project-image-concept" : ""}`}
                 >

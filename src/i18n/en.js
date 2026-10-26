@@ -88,6 +88,7 @@ export default {
   projects: {
     label: "My projects",
     contribution: "My contribution:",
+    circuitLabels: ["Exchanges", "Memory & context", "AI agents"],
     circuitAlt:
       "Conceptual exploded view: exchanges feed memory and context layers connected to AI agents.",
     circuitCredit: "Conceptual illustration",

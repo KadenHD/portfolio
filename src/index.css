@@ -534,6 +534,22 @@ svg {
   color: var(--muted);
   padding-top: 10px;
 }
+.circuit-labels {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: clamp(11px, 1.1vw, 12px);
+  font-weight: 650;
+  line-height: 1.4;
+}
+.circuit-labels span:nth-child(2) {
+  text-align: center;
+}
+.circuit-labels span:last-child {
+  text-align: right;
+}
 .project-links {
   display: flex;
   flex-wrap: wrap;
