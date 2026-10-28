@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useI18n } from "@/i18n/useI18n";
-import { languageHref, locales } from "@/i18n/routing";
+import { languageHref, locales, pageHref } from "@/i18n/routing";
 
 export function Navbar() {
-  const { t, locale, changeLanguage } = useI18n();
+  const { t, locale, page, changeLanguage } = useI18n();
+  const homeHref = pageHref(locale);
+  const sectionHref = (hash) => (page === "home" ? hash : homeHref + hash);
   const [open, setOpen] = useState(false);
   const [suffix, setSuffix] = useState(() => ({
     pathname: window.location.pathname,
@@ -47,7 +49,11 @@ export function Navbar() {
   }, []);
   return (
     <header className="site-header page-width">
-      <a href="#" className="wordmark" aria-label={t.nav.home}>
+      <a
+        href={page === "home" ? "#" : homeHref}
+        className="wordmark"
+        aria-label={t.nav.home}
+      >
         <span className="wordmark-initial">P</span>ierre{" "}
         <span className="wordmark-initial">C</span>lément
         <span className="wordmark-dot">.</span>
@@ -58,7 +64,7 @@ export function Navbar() {
         className={open ? "navigation is-open" : "navigation"}
       >
         {links.map(([href, label]) => (
-          <a href={href} key={href} onClick={() => setOpen(false)}>
+          <a href={sectionHref(href)} key={href} onClick={() => setOpen(false)}>
             {label}
           </a>
         ))}

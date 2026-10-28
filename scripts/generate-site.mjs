@@ -1,18 +1,18 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { seoHead, canonicalUrl, metadata, site } from "../src/lib/seo.js";
-import { locales, localePaths } from "../src/i18n/routing.js";
+import { locales, localePaths, siteRoutes } from "../src/i18n/routing.js";
 
 export function sitemapXml() {
-  const alternates = [...locales, "x-default"]
+  const alternates = (page) => [...locales, "x-default"]
     .map(
       (locale) =>
-        `    <xhtml:link rel="alternate" hreflang="${locale}" href="${canonicalUrl(locale === "x-default" ? "fr" : locale)}" />`,
+        `    <xhtml:link rel="alternate" hreflang="${locale}" href="${canonicalUrl(locale === "x-default" ? "fr" : locale, page)}" />`,
     )
     .join("\n");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${locales.map((locale) => `  <url>\n    <loc>${canonicalUrl(locale)}</loc>\n${alternates}\n  </url>`).join("\n")}
+${siteRoutes.map(({ locale, page }) => `  <url>\n    <loc>${canonicalUrl(locale, page)}</loc>\n${alternates(page)}\n  </url>`).join("\n")}
 </urlset>\n`;
 }
 

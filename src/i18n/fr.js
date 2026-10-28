@@ -243,8 +243,9 @@ export default {
   legal: {
     notice: "Mentions légales",
     privacy: "Politique de confidentialité",
-    close: "Fermer la fenêtre",
-    top: "Revenir au début du texte",
+    back: "Retour au portfolio",
+    navigation: "Navigation des documents légaux",
+    newTab: "nouvel onglet",
   },
   data: { experiences, projects, testimonials, legalNotice, privacyPolicy },
 };

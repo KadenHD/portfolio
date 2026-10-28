@@ -1,6 +1,6 @@
 # Portfolio de Pierre Clément
 
-Portfolio bilingue React et Vite : une page principale en français sur `/` et sa traduction anglaise sur `/en/`. Les zones d’intervention et la FAQ sont intégrées à cette page. Les versions utilisent les mêmes composants et médias. Le site est publié sur GitHub Pages avec son domaine personnalisé.
+Portfolio bilingue React et Vite : une page principale en français sur `/` et sa traduction anglaise sur `/en/`. Les zones d’intervention et la FAQ sont intégrées à cette page. Les mentions légales et la politique de confidentialité disposent de pages dédiées dans les deux langues. Les versions utilisent les mêmes composants et médias. Le site est publié sur GitHub Pages avec son domaine personnalisé.
 
 ## Développement
 
@@ -17,7 +17,7 @@ Node 24.21.0 est défini dans `.nvmrc`. Vite autorise l’hôte `devbox` ; la co
 | `npm run lint`         | Vérification du frontend et des scripts                                                |
 | `npm test`             | Parité FR/EN, références conservées, navigation et métadonnées                         |
 | `npm run build`        | Génération des fichiers SEO et bundle dans `dist/`                                     |
-| `npm run prerender`    | Régénération des visuels de marque, build puis HTML complet FR/EN dans `static-pages/` |
+| `npm run prerender`    | Régénération des visuels de marque, build puis six pages HTML FR/EN dans `static-pages/` |
 | `npm run preview`      | Prévisualisation du bundle Vite, avec repli SPA                                        |
 | `npm run preview:seo`  | Régénération et prévisualisation locale des pages prérendues et des images OG/Twitter |
 | `npm run test:browser` | Recette des pages statiques déjà générées avec Chromium                                |
@@ -26,7 +26,9 @@ Node 24.21.0 est défini dans `.nvmrc`. Vite autorise l’hôte `devbox` ; la co
 
 Chromium est installé par Puppeteer lors de `npm ci`. Sur Linux, ses bibliothèques système doivent être disponibles. `PUPPETEER_EXECUTABLE_PATH` permet d’utiliser un navigateur déjà installé. Les commandes qui ouvrent un navigateur s’exécutent dans un environnement de développement ou de CI de confiance.
 
-Pour vérifier les liens directs comme sur GitHub Pages, servir `static-pages/` avec un serveur de fichiers, sans repli de toutes les URL vers `index.html`. Chaque langue déclarée dans `src/i18n/routing.js` doit posséder son propre `index.html`. Le bundle `dist/` seul ne constitue pas la livraison bilingue prérendue.
+Pour vérifier les liens directs comme sur GitHub Pages, servir `static-pages/` avec un serveur de fichiers, sans repli de toutes les URL vers `index.html`. Chaque route déclarée dans `src/i18n/routing.js` doit posséder son propre `index.html`. Le bundle `dist/` seul ne constitue pas la livraison bilingue prérendue.
+
+`react-static-prerender` 1.3 aplatit les chemins imbriqués ; `scripts/finalize-static.mjs` rétablit les dossiers anglais attendus et retire les dossiers intermédiaires avant de contrôler les fichiers livrés. Utiliser la commande complète `npm run prerender`.
 
 ### Prévisualisation avec seo.devbox
 
@@ -55,7 +57,15 @@ Limite constatée dans seo.devbox le 20 octobre 2026 : son extraction compte ég
 - `src/i18n/routing.js` : langues et URL publiques.
 - `src/data/serviceAreas.js` : zones desservies, références locales et questions/réponses FR/EN de la section de proximité.
 
-Le sélecteur FR/EN met à jour l’URL, le contenu et les métadonnées sans recharger la page. Il conserve l’ancre, les paramètres de recherche et les champs saisis en mémoire. Les boutons précédent/suivant du navigateur fonctionnent. Les liens restent utilisables sans JavaScript grâce aux deux pages statiques. Aucun cookie de langue et aucune redirection automatique ne sont ajoutés.
+Le sélecteur FR/EN met à jour l’URL, le contenu et les métadonnées sans recharger la page. Il conserve le document consulté, l’ancre, les paramètres de recherche et les champs saisis en mémoire sur le portfolio. Les boutons précédent/suivant du navigateur fonctionnent. Les liens restent utilisables sans JavaScript grâce aux six pages statiques. Aucun cookie de langue et aucune redirection automatique ne sont ajoutés.
+
+| Contenu | Français | Anglais |
+| --- | --- | --- |
+| Portfolio | `/` | `/en/` |
+| Mentions légales | `/mentions-legales/` | `/en/legal-notice/` |
+| Confidentialité | `/confidentialite/` | `/en/privacy-policy/` |
+
+Les pages légales utilisent le défilement normal, la navigation et le footer communs. Leurs liens de section ramènent au portfolio dans la langue courante. Le lien de confidentialité du formulaire ouvre un nouvel onglet pour préserver la saisie ; cette ouverture est annoncée aux lecteurs d’écran. Les anciens dialogues et leur gestion par fragments ont été retirés, sans redirection de compatibilité.
 
 Les descriptions d’expériences et leurs passages en gras reprennent les versions HTML françaises et anglaises des CV du dépôt privé `personal-branding`, dans `cv/` (`CV_Pierre_Clement.html` et `CV_Pierre_Clement_EN.html`). Préserver les résultats chiffrés lors des harmonisations, notamment la formulation « 400% » sans la recalculer. Les expressions longues ont priorité sur leurs mots-clés courts pour conserver les mises en gras complètes.
 
@@ -71,9 +81,9 @@ Les quatre projets partagent une section et un format de carte communs, dans l�
 
 `src/lib/seo.js` centralise le domaine, les titres, descriptions, aperçus sociaux et données structurées. `scripts/generate-site.mjs` actualise le bloc SEO de `index.html`, `public/sitemap.xml`, `public/robots.txt` et les deux manifestes. Ne pas modifier leurs valeurs générées à la main. L’icône source est `public/favicon.svg` et la composition de partage se trouve dans `scripts/social-card-template.mjs`. `npm run brand` exporte les PNG de favicon, l’ICO multirésolution, les icônes Apple/Android et les deux previews 1200 × 630. `npm run prerender` les régénère automatiquement avant le build. Versionner les exports obtenus avec leurs sources. `public/preview.png` reste une copie à jour de la preview française pour les anciennes références. Les URL des icônes et des images Open Graph portent une version pour renouveler les ressources mises en cache lors d’un changement d’identité.
 
-Chaque langue possède une URL canonique distincte et des alternatives réciproques `fr`, `en` et `x-default`. Les données structurées distinguent la personne, son entreprise, les services avec zones desservies, le site et la page. Paris est identifié comme une domiciliation administrative dans une `Organization`, sans inventer un établissement `LocalBusiness` ou `ProfessionalService`. Les services locaux couvrent l’Oise, Compiègne, Beauvais, les Hauts-de-France et l’Île-de-France ; un service à distance conserve la portée internationale. La page `404.html` est bilingue et exclue de l’indexation. Le sitemap n’utilise pas de date de modification artificiellement actualisée à chaque build.
+Chaque page possède son titre, sa description, une URL canonique distincte et des alternatives réciproques `fr`, `en` et `x-default` vers le même document traduit. Le sitemap unique comprend six URL. Les données structurées distinguent la personne, son entreprise, le site et la page ; les services avec zones desservies sont décrits sur les deux pages principales. Paris est identifié comme une domiciliation administrative dans une `Organization`, sans inventer un établissement `LocalBusiness` ou `ProfessionalService`. Les services locaux couvrent l’Oise, Compiègne, Beauvais, les Hauts-de-France et l’Île-de-France ; un service à distance conserve la portée internationale. La page `404.html` est bilingue et exclue de l’indexation. Le sitemap n’utilise pas de date de modification artificiellement actualisée à chaque build.
 
-Le workflow `.github/workflows/static.yml` vérifie le code et les contenus, génère les deux pages, puis publie uniquement `static-pages/` après un push sur `dev`. Le domaine reste défini par `public/CNAME`. Une modification locale n’est visible publiquement qu’après déploiement. Après publication autorisée, contrôler `/` et `/en/`, les aperçus de partage et le traitement du sitemap dans la propriété de domaine Search Console existante. La procédure et les textes préparés pour Google Business Profile sont documentés dans [docs/seo-local.md](docs/seo-local.md).
+Le workflow `.github/workflows/static.yml` vérifie le code et les contenus, génère les six pages, puis publie uniquement `static-pages/` après un push sur `dev`. Le domaine reste défini par `public/CNAME`. Une modification locale n’est visible publiquement qu’après déploiement. Après publication autorisée, contrôler les six URL ci-dessus, les aperçus de partage et le traitement du sitemap dans la propriété de domaine Search Console existante. La procédure et les textes préparés pour Google Business Profile sont documentés dans [docs/seo-local.md](docs/seo-local.md).
 
 Référence : [versions linguistiques dans Google Search](https://developers.google.com/search/docs/specialty/international/localized-versions).
 
@@ -83,7 +93,7 @@ Les trois variables de `.env.example` sont des identifiants publics du frontend 
 
 EmailJS n’est chargé qu’au moment de l’envoi. Les données ne sont pas conservées dans le stockage persistant du navigateur. Un envoi réussi efface les champs ; une erreur les préserve et propose un envoi par email.
 
-La recette navigateur couvre les deux pages sans JavaScript, tous leurs liens et fragments internes, et les largeurs 1440, 1024, 901, 900, 768, 701, 390 et 320 px. Elle vérifie aussi la présence de toutes les réponses de la FAQ et son utilisation au clavier. Elle contrôle la navigation mobile, le changement de langue, le brouillon, l’historique et les fenêtres légales. Elle vérifie aussi le texte complet des expériences, leurs passages en gras, les puces orange, l’absence de troncature et les liens de CV propres à chaque langue. Les requêtes EmailJS sont interceptées : aucun message réel n’est envoyé. Avec un formulaire configuré, la recette simule succès et échec ; sinon, elle vérifie le brouillon email. `PORTFOLIO_SCREENSHOTS=/tmp/portfolio-screens npm run test:browser` enregistre des captures hors du dépôt.
+La recette navigateur couvre les six pages sans JavaScript, tous leurs liens et fragments internes, et les largeurs 1440, 1024, 901, 900, 768, 701, 390 et 320 px. Elle vérifie aussi la présence de toutes les réponses de la FAQ et son utilisation au clavier. Elle contrôle la navigation mobile, le changement de langue, le brouillon, l’historique et le rechargement des pages légales. Les documents légaux sont vérifiés intégralement, avec une taille de texte de 16 px et des liens au survol orange. La recette vérifie aussi le texte complet des expériences, leurs passages en gras, les puces orange, l’absence de troncature et les liens de CV propres à chaque langue. Les requêtes EmailJS sont interceptées : aucun message réel n’est envoyé. Avec un formulaire configuré, la recette simule succès et échec ; sinon, elle vérifie le brouillon email. `PORTFOLIO_SCREENSHOTS=/tmp/portfolio-screens npm run test:browser` enregistre des captures hors du dépôt.
 
 ## Confidentialité et fichiers publics
 

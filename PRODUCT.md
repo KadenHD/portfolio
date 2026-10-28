@@ -76,4 +76,6 @@ Le portfolio propose le même contenu en français à `/` et en anglais à `/en/
 
 Les deux pages principales, en français et en anglais, sont prérendues pour GitHub Pages. Titres, descriptions, aperçus sociaux, données structurées et liens canoniques sont propres à chaque langue. Les alternatives `hreflang` et le sitemap relient les versions correspondantes. Ne pas ajouter de redirection automatique fondée sur la langue du navigateur.
 
+Les mentions légales et la politique de confidentialité se lisent sur des pages dédiées : `/mentions-legales/` et `/confidentialite/`, traduites sur `/en/legal-notice/` et `/en/privacy-policy/`. Elles reprennent la navigation et le footer du portfolio. Les six pages sont prérendues et présentes dans un sitemap unique, avec des métadonnées propres à chaque document. Le sélecteur FR/EN conserve le document consulté. Le lien de confidentialité du formulaire ouvre un nouvel onglet pour préserver la saisie en mémoire. Les anciens dialogues et leur routage par fragments sont retirés sans compatibilité, à la demande de Pierre.
+
 Le CV est disponible en français et en anglais ; chaque version du site propose le PDF dans sa langue. Les témoignages anglais sont signalés comme des traductions de la version française disponible, sans présenter une retraduction comme une citation originale.

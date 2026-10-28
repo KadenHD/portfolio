@@ -1,4 +1,21 @@
-import { copyFile, writeFile, access } from "node:fs/promises";
+import { copyFile, writeFile, access, mkdir, rename, rmdir } from "node:fs/promises";
+import { siteRoutes } from "../src/i18n/routing.js";
+
+// react-static-prerender 1.3 flattens nested paths (en/legal-notice becomes
+// en-legal-notice), even with flatOutput: false. Restore the public directory
+// structure and remove the intermediate directory from the release artifact.
+const output = new URL("../static-pages/", import.meta.url);
+for (const { pathname } of siteRoutes) {
+  const directory = pathname.slice(1, -1);
+  const generatedDirectory = directory.replaceAll("/", "-");
+  if (directory === generatedDirectory) continue;
+  await mkdir(new URL(`${directory}/`, output), { recursive: true });
+  await rename(
+    new URL(`${generatedDirectory}/index.html`, output),
+    new URL(`${directory}/index.html`, output),
+  );
+  await rmdir(new URL(`${generatedDirectory}/`, output));
+}
 
 // react-static-prerender copies assets but deliberately excludes HTML files.
 await copyFile(
@@ -7,8 +24,7 @@ await copyFile(
 );
 await writeFile(new URL("../static-pages/.nojekyll", import.meta.url), "");
 for (const path of [
-  "index.html",
-  "en/index.html",
+  ...siteRoutes.map(({ pathname }) => `${pathname.slice(1)}index.html`),
   "site.webmanifest",
   "en/site.webmanifest",
   "images/social-fr.png",

@@ -246,8 +246,9 @@ export default {
   legal: {
     notice: "Legal notice",
     privacy: "Privacy policy",
-    close: "Close this window",
-    top: "Return to the beginning of the text",
+    back: "Back to portfolio",
+    navigation: "Legal document navigation",
+    newTab: "new tab",
   },
   data: {
     experiences: englishExperiences,

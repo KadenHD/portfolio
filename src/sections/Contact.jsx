@@ -8,9 +8,10 @@ import {
   Phone,
 } from "lucide-react";
 import { business } from "@/data/legal";
+import { pageHref } from "@/i18n/routing";
 const address = business.email;
 export function Contact() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [sending, setSending] = useState(false);
   const inFlight = useRef(false);
@@ -192,7 +193,15 @@ export function Contact() {
           placeholder={t.contact.messagePlaceholder}
         />
         <p className="form-note" id="contact-privacy">
-          {t.contact.privacy} <a href="#privacy-policy">{t.contact.policy}</a>.
+          {t.contact.privacy}{" "}
+          <a
+            href={pageHref(locale, "privacyPolicy")}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t.contact.policy}
+            <span className="sr-only"> ({t.legal.newTab})</span>
+          </a>.
         </p>
         {configured ? (
           <button className="button" type="submit" disabled={sending}>

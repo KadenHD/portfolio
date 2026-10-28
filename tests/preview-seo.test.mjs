@@ -13,6 +13,7 @@ import path from "node:path";
 import { once } from "node:events";
 import { createPreviewServer } from "../scripts/preview-seo.mjs";
 import { canonicalUrl, seoHead } from "../src/lib/seo.js";
+import { siteRoutes } from "../src/i18n/routing.js";
 
 test("SEO preview serves distinct static languages and local share images without changing release files", async () => {
   const directory = await mkdtemp(
@@ -27,12 +28,13 @@ test("SEO preview serves distinct static languages and local share images withou
   try {
     await mkdir(path.join(root, "en"), { recursive: true });
     await mkdir(path.join(root, "images"));
-    for (const locale of ["fr", "en"]) {
-      pages[locale] =
-        `<html lang="${locale}"><head>${seoHead(locale)}</head><body><h1>${locale}</h1></body></html>`;
+    for (const { locale, page, pathname } of siteRoutes) {
+      pages[pathname] =
+        `<html lang="${locale}"><head>${seoHead(locale, page)}</head><body><h1>${page}</h1></body></html>`;
+      await mkdir(path.join(root, pathname), { recursive: true });
       await writeFile(
-        path.join(root, locale === "en" ? "en/index.html" : "index.html"),
-        pages[locale],
+        path.join(root, pathname, "index.html"),
+        pages[pathname],
       );
       await writeFile(path.join(root, `images/social-${locale}.png`), image);
     }
@@ -50,17 +52,16 @@ test("SEO preview serves distinct static languages and local share images withou
     server.listen(0, "127.0.0.1");
     await once(server, "listening");
     const origin = `http://127.0.0.1:${server.address().port}`;
-    for (const locale of ["fr", "en"]) {
-      const url = locale === "en" ? "/en/" : "/";
+    for (const { locale, page, pathname: url } of siteRoutes) {
       const response = await fetch(origin + url);
       assert.equal(response.status, 200);
       assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
       const html = await response.text();
       assert.ok(html.includes(`<html lang="${locale}">`));
       assert.ok(
-        html.includes(`rel="canonical" href="${canonicalUrl(locale)}"`),
+        html.includes(`rel="canonical" href="${canonicalUrl(locale, page)}"`),
       );
-      assert.ok(html.includes(`hreflang="en" href="${canonicalUrl("en")}"`));
+      assert.ok(html.includes(`hreflang="en" href="${canonicalUrl("en", page)}"`));
       for (const attribute of ['property="og:image"', 'name="twitter:image"']) {
         assert.ok(
           html.includes(
@@ -74,10 +75,10 @@ test("SEO preview serves distinct static languages and local share images withou
       assert.deepEqual(Buffer.from(await asset.arrayBuffer()), image);
       assert.equal(
         await readFile(
-          path.join(root, locale === "en" ? "en/index.html" : "index.html"),
+          path.join(root, url, "index.html"),
           "utf8",
         ),
-        pages[locale],
+        pages[url],
       );
     }
     const redirect = await fetch(origin + "/en?source=test", {

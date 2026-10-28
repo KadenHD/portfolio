@@ -1,4 +1,4 @@
-# Référencement local - suivi au 26 octobre 2026
+# Référencement local - suivi au 28 octobre 2026
 
 ## Positionnement retenu
 
@@ -15,7 +15,7 @@ Paris est une domiciliation administrative. Aucun bureau à Compiègne ou Beauva
 - La FAQ sert à informer les visiteurs. Aucun balisage `FAQPage` ou résultat enrichi promis : Google a cessé d’afficher les résultats enrichis FAQ à partir du 7 mai 2026, selon son journal officiel.
 - Suppression du composant de page de prestation, des textes longs correspondants, des styles, des routes, du fil d’Ariane et du traitement des chemins imbriqués devenus inutiles.
 - Données structurées conservées : `Person`, `Organization` avec adresse de domiciliation identifiée, `Service` avec zones desservies explicites, service à distance international, `WebSite` et `WebPage`. Aucun bureau `LocalBusiness` ou `ProfessionalService` inventé, aucune note ni étoile ajoutée.
-- Titres et descriptions, URL canoniques, alternatives FR/EN/x-default, Open Graph et Twitter adaptés à chaque langue. Sitemap ramené aux deux URL principales ; `robots.txt`, prérendu et CI alignés.
+- Titres et descriptions, URL canoniques, alternatives FR/EN/x-default, Open Graph et Twitter adaptés à chaque page et langue. Le sitemap unique comprend les deux URL principales et quatre pages légales ; `robots.txt`, prérendu et CI sont alignés. Chaque document légal renvoie vers sa traduction, sans utiliser la page principale comme canonical.
 - Aucun outil de suivi ajouté. Search Console existe pour le domaine ; aucune nouvelle balise de vérification n’est requise pour ces changements dans la même propriété.
 
 ## URL publiques à contrôler
@@ -23,10 +23,12 @@ Paris est une domiciliation administrative. Aucun bureau à Compiègne ou Beauva
 | Contenu | Français | Anglais |
 | --- | --- | --- |
 | Portfolio | `/` | `/en/` |
+| Mentions légales | `/mentions-legales/` | `/en/legal-notice/` |
+| Confidentialité | `/confidentialite/` | `/en/privacy-policy/` |
 | Proximité | `/#service-areas` | `/en/#service-areas` |
 | FAQ | `/#faq` | `/en/#faq` |
 
-Les ancres ne sont pas des pages distinctes à soumettre dans le sitemap. Le contrôle public du 26 octobre 2026 confirme des réponses HTTP 200 pour `/` en français, `/en/` en anglais, `robots.txt` et `sitemap.xml`. Le sitemap public contient les deux URL principales et `robots.txt` le déclare. Ce contrôle d’accessibilité ne démontre pas que Google a indexé les deux pages.
+Les ancres de section ne sont pas des pages distinctes à soumettre dans le sitemap. Le contrôle public du 26 octobre 2026 confirmait des réponses HTTP 200 pour `/` en français, `/en/` en anglais, `robots.txt` et `sitemap.xml`, avec les deux URL principales dans le sitemap. Les quatre pages légales et le sitemap à six URL sont préparés localement le 28 octobre ; leur disponibilité publique devra être vérifiée après déploiement. Le contrôle d’accessibilité ne démontre pas une indexation par Google.
 
 ## Google Search Console : propriété de domaine déjà existante
 
@@ -78,7 +80,7 @@ Les liens d’identité du site incluent LinkedIn, GitHub, Pappers, Malt et la p
 
 ## Validation locale
 
-La consolidation est vérifiée avec les commandes du dépôt : lint, tests, build, prérendu FR/EN et recette navigateur. Les contrôles couvrent les métadonnées, les zones desservies, le sitemap à deux URL, les liens internes, la présence complète des cinq réponses et l’ouverture/fermeture de la FAQ au clavier. Le contrôle responsive porte sur les largeurs 1440/1024/768/701/390/320 px. Les captures de cette recette restent hors du dépôt dans `/tmp/portfolio-local-faq-checks/`.
+La consolidation est vérifiée avec les commandes du dépôt : lint, tests, build, prérendu FR/EN et recette navigateur. Les contrôles couvrent les métadonnées, les zones desservies, le sitemap à six URL, les liens internes, les documents légaux complets, la présence complète des cinq réponses et l’ouverture/fermeture de la FAQ au clavier. Le contrôle responsive porte sur les largeurs 1440/1024/901/900/768/701/390/320 px. Les captures restent hors du dépôt ; leur dossier est configurable avec `PORTFOLIO_SCREENSHOTS`.
 
 Ces contrôles locaux ne constituent ni une validation de l’indexation par Google, ni une mesure de classement. Les commandes de recette ne publient pas le site ; le workflow GitHub Pages est déclenché séparément par un push sur `dev`.
 

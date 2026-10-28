@@ -8,24 +8,29 @@ import { Testimonials } from "@/sections/Testimonials";
 import { Contact } from "@/sections/Contact";
 import { Footer } from "@/layout/Footer";
 import { ServiceAreas } from "@/sections/ServiceAreas";
+import { LegalPage } from "@/pages/LegalPage";
 
 export default function App() {
-  const { t } = useI18n();
+  const { t, page } = useI18n();
   return (
     <>
       <a className="skip-link" href="#main">
         {t.nav.skip}
       </a>
       <Navbar />
-      <main id="main">
-        <Hero />
-        <About />
-        <Projects />
-        <Experience />
-        <Testimonials />
-        <ServiceAreas />
-        <Contact />
-      </main>
+      {page === "home" ? (
+        <main id="main">
+          <Hero />
+          <About />
+          <Projects />
+          <Experience />
+          <Testimonials />
+          <ServiceAreas />
+          <Contact />
+        </main>
+      ) : (
+        <LegalPage />
+      )}
       <Footer />
     </>
   );

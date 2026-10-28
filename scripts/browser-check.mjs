@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { readFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import puppeteer from "puppeteer";
-import { canonicalUrl, metadata, structuredData } from "../src/lib/seo.js";
-import { localePaths } from "../src/i18n/routing.js";
+import { canonicalUrl, metadata, pageMetadata, structuredData } from "../src/lib/seo.js";
+import { localePaths, pageHref, siteRoutes } from "../src/i18n/routing.js";
 import fr from "../src/i18n/fr.js";
 import en from "../src/i18n/en.js";
 
@@ -79,7 +79,8 @@ async function pageFor({
   });
   return page;
 }
-async function ready(page, locale) {
+async function ready(page, locale, pageKey = "home") {
+  const catalog = locale === "fr" ? fr : en;
   await page.waitForFunction(
     ({ language, heading }) =>
       document.documentElement.lang === language &&
@@ -87,7 +88,9 @@ async function ready(page, locale) {
     {},
     {
       language: locale,
-      heading: metadata[locale].headline[0],
+      heading: pageKey === "home"
+        ? metadata[locale].headline[0]
+        : catalog.legal[pageKey === "legalNotice" ? "notice" : "privacy"],
     },
   );
   await page.evaluate(() => document.fonts.ready);
@@ -235,18 +238,60 @@ async function layout(page, name) {
       fullPage: true,
     });
 }
+async function legalLayout(page, { locale, page: pageKey }, name) {
+  const catalog = locale === "fr" ? fr : en;
+  const info = await page.evaluate(() => ({
+    overflow: document.documentElement.scrollWidth > innerWidth,
+    headings: document.querySelectorAll("h1").length,
+    dialogs: document.querySelectorAll("dialog").length,
+    contentOverflow: getComputedStyle(document.querySelector(".legal-content")).overflowY,
+    sections: [...document.querySelectorAll(".legal-content section")].map((section) => ({
+      title: section.querySelector("h2")?.textContent ?? null,
+      texts: [...section.querySelectorAll("p")].map((node) => node.textContent),
+    })),
+    fonts: [...document.querySelectorAll(".legal-content section:not(:first-child) p")].map((node) => parseFloat(getComputedStyle(node).fontSize)),
+    back: document.querySelector(".legal-back").getAttribute("href"),
+    menuLinks: [...document.querySelectorAll(".navigation a")].map((node) => node.getAttribute("href")),
+    legacyLinks: document.querySelectorAll('a[href="#legal-notice"], a[href="#privacy-policy"]').length,
+  }));
+  assert.equal(info.overflow, false, `${name}: horizontal overflow`);
+  assert.equal(info.headings, 1, `${name}: one H1`);
+  assert.equal(info.dialogs, 0, `${name}: native document page`);
+  assert.equal(info.contentOverflow, "visible", `${name}: normal page scrolling`);
+  assert.equal(info.legacyLinks, 0);
+  assert.equal(info.back, localePaths[locale]);
+  assert.ok(info.fonts.every((font) => font >= 16), `${name}: readable paragraphs`);
+  assert.deepEqual(info.sections, catalog.data[pageKey].map((section) => ({
+    title: section.title ?? null,
+    texts: [
+      ...(section.texts ?? []).map((text) => Array.isArray(text)
+        ? text.map((part) => typeof part === "string" ? part : part.text).join("")
+        : text),
+      ...(section.links ?? []).map((link) => link.text),
+    ],
+  })), `${name}: complete legal copy`);
+  for (const href of info.menuLinks)
+    assert.ok(href.startsWith(`${localePaths[locale]}#`), `${name}: menu returns to portfolio`);
+  const contentLink = await page.$(".legal-content a");
+  await contentLink.hover();
+  assert.equal(await contentLink.evaluate((node) => getComputedStyle(node).color), "rgb(200, 60, 10)");
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  if (screenshots && [1440, 390, 320].includes(page.viewport().width))
+    await page.screenshot({ path: path.join(screenshots, `${name}.png`) });
+}
+
 try {
   const staticPages = new Map();
-  for (const locale of ["fr", "en"]) {
+  for (const { locale, page: pageKey, pathname } of siteRoutes) {
     const page = await pageFor({ javaScript: false });
-    await page.goto(`${origin}${localePaths[locale]}`, {
+    await page.goto(`${origin}${pathname}`, {
       waitUntil: "networkidle0",
     });
-    await ready(page, locale);
-    assert.equal(await page.title(), metadata[locale].title);
+    await ready(page, locale, pageKey);
+    assert.equal(await page.title(), pageMetadata(locale, pageKey).title);
     assert.equal(
       await page.$eval('link[rel="canonical"]', (node) => node.href),
-      canonicalUrl(locale),
+      canonicalUrl(locale, pageKey),
     );
     assert.equal(
       await page.$$eval("link[hreflang]", (nodes) => nodes.length),
@@ -264,17 +309,18 @@ try {
       h1Count: document.querySelectorAll("h1").length,
     }));
     assert.equal(data.h1Count, 1);
-    assert.deepEqual(data.schemas, [structuredData(locale)]);
+    assert.deepEqual(data.schemas, [structuredData(locale, pageKey)]);
     for (const language of ["fr", "en", "x-default"])
       assert.ok(
         data.alternates.some(
           ([name, href]) =>
             name === language &&
-            href === canonicalUrl(language === "x-default" ? "fr" : language),
+            href === canonicalUrl(language === "x-default" ? "fr" : language, pageKey),
         ),
       );
-    staticPages.set(localePaths[locale], data);
-    await layout(page, `${locale}-no-javascript`);
+    staticPages.set(pathname, data);
+    if (pageKey === "home") await layout(page, `${locale}-no-javascript`);
+    else await legalLayout(page, { locale, page: pageKey }, `${locale}-${pageKey}-no-javascript`);
     await page.close();
   }
   // Check real static destinations and cross-page fragment targets, not SPA fallbacks.
@@ -284,11 +330,10 @@ try {
       if (url.origin !== origin) continue;
       if (url.hash && staticPages.has(url.pathname)) {
         const id = decodeURIComponent(url.hash.slice(1));
-        if (!["legal-notice", "privacy-policy"].includes(id))
-          assert.ok(
-            staticPages.get(url.pathname).ids.includes(id),
-            `${pathname}: missing target ${href}`,
-          );
+        assert.ok(
+          staticPages.get(url.pathname).ids.includes(id),
+          `${pathname}: missing target ${href}`,
+        );
       }
       const file = url.pathname.endsWith("/")
         ? url.pathname + "index.html"
@@ -439,6 +484,29 @@ try {
       await page.close();
     }
   }
+  for (const width of [1440, 1024, 901, 900, 768, 701, 390, 320]) {
+    for (const route of siteRoutes.filter(({ page }) => page !== "home")) {
+      const page = await pageFor({ width, height: width < 768 ? 844 : 1000 });
+      await page.goto(`${origin}${route.pathname}`, { waitUntil: "networkidle0" });
+      await ready(page, route.locale, route.page);
+      await legalLayout(page, route, `${route.locale}-${route.page}-${width}`);
+      if (width === 390) {
+        const otherLocale = route.locale === "fr" ? "en" : "fr";
+        await page.click(`.language-switch a[lang="${otherLocale}"]`);
+        await ready(page, otherLocale, route.page);
+        assert.equal(page.url(), origin + pageHref(otherLocale, route.page));
+        assert.equal(await page.title(), pageMetadata(otherLocale, route.page).title);
+      }
+      if (width === 320 && route.locale === "fr" && route.page === "legalNotice") {
+        await page.click(".menu-toggle");
+        await page.click('.navigation a[href="/#contact"]');
+        await ready(page, "fr");
+        assert.equal(page.url(), `${origin}/#contact`);
+        assert.equal(await page.$eval(".menu-toggle", (node) => node.getAttribute("aria-expanded")), "false");
+      }
+      await page.close();
+    }
+  }
   const page = await pageFor();
   await page.goto(`${origin}/#contact`, { waitUntil: "networkidle0" });
   await ready(page, "fr");
@@ -517,19 +585,25 @@ try {
     assert.ok(decodeURIComponent(draft).includes("Hello Pierre,"));
     assert.equal(emailRequests, 0);
   }
-  await page.click(".form-note a");
-  await page.waitForSelector("dialog[open]");
+  const privacyLink = await page.$eval(".form-note a", (node) => ({ href: node.href, target: node.target }));
+  assert.equal(privacyLink.href, `${origin}/en/privacy-policy/`);
+  assert.equal(privacyLink.target, "_blank", "Reading privacy preserves the contact draft");
+  await page.goto(`${origin}/mentions-legales/`, { waitUntil: "networkidle0" });
+  await ready(page, "fr", "legalNotice");
+  await page.click('.language-switch a[lang="en"]');
+  await ready(page, "en", "legalNotice");
+  assert.equal(page.url(), `${origin}/en/legal-notice/`);
+  assert.equal(await page.title(), pageMetadata("en", "legalNotice").title);
+  assert.equal(await page.$eval('link[rel="canonical"]', (node) => node.href), canonicalUrl("en", "legalNotice"));
+  await page.goBack({ waitUntil: "domcontentloaded" });
+  await ready(page, "fr", "legalNotice");
+  await page.goForward({ waitUntil: "domcontentloaded" });
+  await ready(page, "en", "legalNotice");
+  await page.reload({ waitUntil: "networkidle0" });
+  await ready(page, "en", "legalNotice");
   assert.equal(
-    await page.$eval("dialog h2", (node) => node.textContent),
-    "Privacy policy",
-  );
-  await page.keyboard.press("Escape");
-  await page.waitForSelector("dialog", { hidden: true });
-  await page.goto(`${origin}/en/#legal-notice`, { waitUntil: "networkidle0" });
-  await page.waitForSelector("dialog[open]");
-  assert.equal(
-    await page.$eval("dialog h2", (node) => node.textContent),
-    "Legal notice",
+    await page.$eval('.language-switch a[lang="fr"]', (node) => node.getAttribute("href")),
+    "/mentions-legales/",
   );
   const siret = await page.$eval(".legal-identifier:last-of-type", (node) => ({
     text: node.textContent,
@@ -537,18 +611,29 @@ try {
   }));
   assert.equal(siret.text, "994 768 406 00013");
   assert.equal(siret.nowrap, "nowrap");
-  await page.keyboard.press("Escape");
-  await page.waitForFunction(
-    () =>
-      document
-        .querySelector('.language-switch a[lang="fr"]')
-        .getAttribute("href") === "/",
-  );
+  await page.click('.footer-bottom a[href="/en/privacy-policy/"]');
+  await ready(page, "en", "privacyPolicy");
+  await page.click('.language-switch a[lang="fr"]');
+  await ready(page, "fr", "privacyPolicy");
+  assert.equal(page.url(), `${origin}/confidentialite/`);
+  await page.click(".legal-back");
+  await ready(page, "fr");
+  assert.equal(page.url(), `${origin}/`);
+  await page.click('.footer-bottom a[href="/mentions-legales/"]');
+  await ready(page, "fr", "legalNotice");
+  await page.click('.navigation a[href="/#faq"]');
+  await ready(page, "fr");
+  assert.equal(page.url(), `${origin}/#faq`);
+  await page.goto(`${origin}/en/privacy-policy/`, { waitUntil: "networkidle0" });
+  await ready(page, "en", "privacyPolicy");
+  await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+  await page.click('.footer-bottom a[href="#"]');
+  await page.waitForFunction(() => window.scrollY < 2);
   assert.equal(new URL(page.url()).hash, "");
   assert.deepEqual(externalRequests, [], "No unexpected third-party requests");
   assert.deepEqual(errors, [], "No browser errors or missing files");
   console.log(
-    `Browser checks passed: 2 static FR/EN routes, local section and keyboard-accessible FAQ, internal links and fragments, 1440/1024/901/900/768/701/390/320px, testimonial and language navigation, draft retention, legal dialogs and contact flow (${emailRequests} mocked submissions).`,
+    `Browser checks passed: 6 static FR/EN routes, local section and keyboard-accessible FAQ, internal links and fragments, 1440/1024/901/900/768/701/390/320px, testimonial and language navigation, draft retention, legal pages, document history/reload and contact flow (${emailRequests} mocked submissions).`,
   );
 } finally {
   await browser.close();

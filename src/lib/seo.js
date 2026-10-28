@@ -1,5 +1,5 @@
 import { business } from "../data/legal.js";
-import { locales, localePaths } from "../i18n/routing.js";
+import { locales, pageHref } from "../i18n/routing.js";
 import { servicePlaces } from "../data/serviceAreas.js";
 
 export const site = {
@@ -62,96 +62,128 @@ export const metadata = {
   },
 };
 
-export function canonicalUrl(locale) {
-  if (!locales.includes(locale))
-    throw new Error(`Unsupported locale: ${locale}`);
-  return site.origin + localePaths[locale];
+const documentMetadata = {
+  fr: {
+    legalNotice: {
+      title: "Mentions légales | Pierre Clément",
+      description:
+        "Identité et coordonnées de Pierre Clément, entrepreneur individuel, hébergement du portfolio, droits sur les contenus et médiation de la consommation CM2C.",
+    },
+    privacyPolicy: {
+      title: "Politique de confidentialité | Pierre Clément",
+      description:
+        "Traitement des données du portfolio de Pierre Clément : formulaire de contact, destinataires, durées de conservation et exercice de vos droits.",
+    },
+  },
+  en: {
+    legalNotice: {
+      title: "Legal notice | Pierre Clément",
+      description:
+        "Identity and contact details of Pierre Clément, sole trader, portfolio hosting, content rights and CM2C consumer mediation contact information.",
+    },
+    privacyPolicy: {
+      title: "Privacy policy | Pierre Clément",
+      description:
+        "How Pierre Clément’s portfolio processes personal data: contact form, recipients, retention periods and how to exercise your rights.",
+    },
+  },
+};
+
+export function canonicalUrl(locale, page = "home") {
+  return site.origin + pageHref(locale, page);
 }
 
-export function structuredData(locale) {
-  canonicalUrl(locale);
-  const meta = metadata[locale];
+export function pageMetadata(locale, page = "home") {
+  pageHref(locale, page);
+  return { ...metadata[locale], ...documentMetadata[locale][page] };
+}
+
+export function structuredData(locale, page = "home") {
+  const meta = pageMetadata(locale, page);
   const personId = `${site.origin}/#person`;
   const businessId = `${site.origin}/#business`;
   const serviceId = `${canonicalUrl(locale)}#service`;
+  const graph = [
+    {
+      "@type": "Person",
+      "@id": personId,
+      name: site.name,
+      url: canonicalUrl(locale),
+      jobTitle: meta.role,
+      image: `${site.origin}/images/pierre-clement-portrait-relaxed.webp`,
+      sameAs: site.profiles,
+      knowsLanguage: ["fr", "en"],
+      knowsAbout: meta.serviceType,
+    },
+    {
+      // Paris is an administrative address, not a claimed physical branch.
+      "@type": "Organization",
+      "@id": businessId,
+      name: site.name,
+      url: canonicalUrl(locale),
+      description: meta.businessDescription,
+      founder: { "@id": personId },
+      email: business.email,
+      telephone: business.phone,
+      address: {
+        "@type": "PostalAddress",
+        name:
+          locale === "fr"
+            ? "Adresse de domiciliation administrative"
+            : "Administrative domiciliation address",
+        streetAddress: "60 rue François Ier",
+        postalCode: "75008",
+        addressLocality: "Paris",
+        addressCountry: "FR",
+      },
+      sameAs: site.profiles,
+    },
+    {
+      "@type": "Service",
+      "@id": serviceId,
+      name: meta.offer,
+      url: canonicalUrl(locale),
+      description: meta.description,
+      serviceType: meta.serviceType,
+      provider: { "@id": businessId },
+      areaServed: servicePlaces,
+    },
+    {
+      "@type": "Service",
+      "@id": `${site.origin}/#remote-service`,
+      name: meta.remoteService,
+      provider: { "@id": businessId },
+      areaServed: "Worldwide",
+      availableChannel: {
+        "@type": "ServiceChannel",
+        serviceUrl: `${canonicalUrl(locale)}#contact`,
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${site.origin}/#website`,
+      url: `${site.origin}/`,
+      name: site.name,
+      inLanguage: ["fr", "en"],
+      publisher: { "@id": businessId },
+    },
+    {
+      "@type": "WebPage",
+      "@id": canonicalUrl(locale, page),
+      url: canonicalUrl(locale, page),
+      name: meta.title,
+      description: meta.description,
+      inLanguage: locale,
+      isPartOf: { "@id": `${site.origin}/#website` },
+      about: { "@id": personId },
+      ...(page === "home" ? { mainEntity: { "@id": serviceId } } : {}),
+    },
+  ];
   return {
     "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Person",
-        "@id": personId,
-        name: site.name,
-        url: canonicalUrl(locale),
-        jobTitle: meta.role,
-        image: `${site.origin}/images/pierre-clement-portrait-relaxed.webp`,
-        sameAs: site.profiles,
-        knowsLanguage: ["fr", "en"],
-        knowsAbout: meta.serviceType,
-      },
-      {
-        // Paris is an administrative address, not a claimed physical branch.
-        "@type": "Organization",
-        "@id": businessId,
-        name: site.name,
-        url: canonicalUrl(locale),
-        description: meta.businessDescription,
-        founder: { "@id": personId },
-        email: business.email,
-        telephone: business.phone,
-        address: {
-          "@type": "PostalAddress",
-          name:
-            locale === "fr"
-              ? "Adresse de domiciliation administrative"
-              : "Administrative domiciliation address",
-          streetAddress: "60 rue François Ier",
-          postalCode: "75008",
-          addressLocality: "Paris",
-          addressCountry: "FR",
-        },
-        sameAs: site.profiles,
-      },
-      {
-        "@type": "Service",
-        "@id": serviceId,
-        name: meta.offer,
-        url: canonicalUrl(locale),
-        description: meta.description,
-        serviceType: meta.serviceType,
-        provider: { "@id": businessId },
-        areaServed: servicePlaces,
-      },
-      {
-        "@type": "Service",
-        "@id": `${site.origin}/#remote-service`,
-        name: meta.remoteService,
-        provider: { "@id": businessId },
-        areaServed: "Worldwide",
-        availableChannel: {
-          "@type": "ServiceChannel",
-          serviceUrl: `${canonicalUrl(locale)}#contact`,
-        },
-      },
-      {
-        "@type": "WebSite",
-        "@id": `${site.origin}/#website`,
-        url: `${site.origin}/`,
-        name: site.name,
-        inLanguage: ["fr", "en"],
-        publisher: { "@id": businessId },
-      },
-      {
-        "@type": "WebPage",
-        "@id": canonicalUrl(locale),
-        url: canonicalUrl(locale),
-        name: meta.title,
-        description: meta.description,
-        inLanguage: locale,
-        isPartOf: { "@id": `${site.origin}/#website` },
-        about: { "@id": personId },
-        mainEntity: { "@id": serviceId },
-      },
-    ],
+    "@graph": page === "home"
+      ? graph
+      : graph.filter((item) => item["@type"] !== "Service"),
   };
 }
 
@@ -165,9 +197,8 @@ export function escapeHtml(value) {
   );
 }
 
-export function seoHead(locale) {
-  canonicalUrl(locale);
-  const meta = metadata[locale];
+export function seoHead(locale, page = "home") {
+  const meta = pageMetadata(locale, page);
   const tag = (key, content, property = false) =>
     `<meta data-site-seo ${property ? "property" : "name"}="${key}" content="${escapeHtml(content)}">`;
   // Bump when the artwork changes so a refreshed share card requests new pixels.
@@ -175,17 +206,17 @@ export function seoHead(locale) {
   return [
     `<title data-site-seo>${escapeHtml(meta.title)}</title>`,
     tag("description", meta.description),
-    `<link data-site-seo rel="canonical" href="${canonicalUrl(locale)}">`,
+    `<link data-site-seo rel="canonical" href="${canonicalUrl(locale, page)}">`,
     ...[...locales, "x-default"].map(
       (language) =>
-        `<link data-site-seo rel="alternate" hreflang="${language}" href="${canonicalUrl(language === "x-default" ? "fr" : language)}">`,
+        `<link data-site-seo rel="alternate" hreflang="${language}" href="${canonicalUrl(language === "x-default" ? "fr" : language, page)}">`,
     ),
     `<link data-site-seo rel="manifest" href="${locale === "en" ? "/en/" : "/"}site.webmanifest">`,
     ...Object.entries({
       title: meta.title,
       description: meta.description,
       type: "website",
-      url: canonicalUrl(locale),
+      url: canonicalUrl(locale, page),
       site_name: site.name,
       locale: meta.ogLocale,
       "locale:alternate": metadata[locale === "fr" ? "en" : "fr"].ogLocale,
@@ -201,6 +232,6 @@ export function seoHead(locale) {
       image,
       "image:alt": meta.imageAlt,
     }).map(([key, value]) => tag(`twitter:${key}`, value)),
-    `<script data-site-seo type="application/ld+json">${JSON.stringify(structuredData(locale)).replace(/</g, "\\u003c")}</script>`,
+    `<script data-site-seo type="application/ld+json">${JSON.stringify(structuredData(locale, page)).replace(/</g, "\\u003c")}</script>`,
   ].join("\n    ");
 }

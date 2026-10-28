@@ -3,14 +3,21 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import fr from "../src/i18n/fr.js";
 import en from "../src/i18n/en.js";
-import { languageHref, localeFromPath } from "../src/i18n/routing.js";
+import {
+  languageHref,
+  localeFromPath,
+  pageFromPath,
+  pageHref,
+  siteRoutes,
+} from "../src/i18n/routing.js";
 import {
   canonicalUrl,
-  metadata,
+  pageMetadata,
   seoHead,
   structuredData,
 } from "../src/lib/seo.js";
 import { sitemapXml } from "../scripts/generate-site.mjs";
+import prerenderConfig from "../prerender.config.js";
 
 function shape(value) {
   if (Array.isArray(value)) return value.map(shape);
@@ -222,11 +229,35 @@ test("Language links preserve the page, query and section", () => {
     "/en/?ref=portfolio#contact",
   );
   assert.equal(
-    languageHref("fr", { hash: "#privacy-policy" }),
-    "/#privacy-policy",
+    languageHref("fr", { pathname: "/en/privacy-policy/", search: "?ref=contact" }),
+    "/confidentialite/?ref=contact",
   );
   assert.throws(() => languageHref("es"));
   assert.equal(languageHref("en", { hash: "#faq" }), "/en/#faq");
+});
+
+test("Legal documents have distinct static routes and translate to the same document", () => {
+  assert.deepEqual(siteRoutes.map((route) => route.pathname), [
+    "/", "/en/", "/mentions-legales/", "/en/legal-notice/",
+    "/confidentialite/", "/en/privacy-policy/",
+  ]);
+  for (const route of siteRoutes) {
+    assert.equal(pageFromPath(route.pathname), route.page);
+    assert.equal(pageFromPath(route.pathname.replace(/\/$/, "") || "/"), route.page);
+    assert.equal(localeFromPath(route.pathname), route.locale);
+    assert.equal(pageHref(route.locale, route.page), route.pathname);
+    for (const locale of ["fr", "en"])
+      assert.equal(
+        languageHref(locale, { pathname: route.pathname, search: "?source=footer" }),
+        pageHref(locale, route.page) + "?source=footer",
+      );
+  }
+  assert.throws(() => pageHref("es"));
+  assert.throws(() => pageHref("fr", "unknown"));
+  assert.deepEqual(
+    prerenderConfig.routes,
+    ["/", "/en", "/mentions-legales", "/en/legal-notice", "/confidentialite", "/en/privacy-policy"],
+  );
 });
 
 test("The local FAQ preserves stable question and reference anchors in both languages", () => {
@@ -290,48 +321,58 @@ test("Paris is an administrative address, service areas are explicit and remote 
   }
 });
 
-test("Each language has one canonical, reciprocal alternates and matching structured data", () => {
-  for (const locale of ["fr", "en"]) {
-    const head = seoHead(locale);
+test("Every page has one canonical, reciprocal document alternates and matching structured data", () => {
+  const titles = new Set();
+  for (const { locale, page: pageKey } of siteRoutes) {
+    const head = seoHead(locale, pageKey);
+    const meta = pageMetadata(locale, pageKey);
+    titles.add(meta.title);
     assert.equal((head.match(/rel="canonical"/g) ?? []).length, 1);
-    assert.ok(head.includes(`rel="canonical" href="${canonicalUrl(locale)}"`));
+    assert.ok(head.includes(`rel="canonical" href="${canonicalUrl(locale, pageKey)}"`));
     for (const language of ["fr", "en", "x-default"])
-      assert.ok(head.includes(`hreflang="${language}"`));
+      assert.ok(head.includes(`hreflang="${language}" href="${canonicalUrl(language === "x-default" ? "fr" : language, pageKey)}"`));
+    assert.ok(head.includes(`property="og:url" content="${canonicalUrl(locale, pageKey)}"`));
     assert.equal((head.match(/<title /g) ?? []).length, 1);
     assert.ok(
       head.includes(
         `https://pierre-clement-oise.fr/images/social-${locale}.png`,
       ),
     );
-    const schema = structuredData(locale);
+    const schema = structuredData(locale, pageKey);
     const page = schema["@graph"].find((item) => item["@type"] === "WebPage");
-    assert.equal(page.url, canonicalUrl(locale));
+    assert.equal(page.url, canonicalUrl(locale, pageKey));
     assert.equal(page.inLanguage, locale);
-    assert.equal(page.name, metadata[locale].title);
+    assert.equal(page.name, meta.title);
+    assert.equal(page.description, meta.description);
+    if (pageKey !== "home") {
+      assert.ok(!schema["@graph"].some((item) => item["@type"] === "Service"));
+      assert.ok(!page.mainEntity);
+    }
     assert.ok(!head.includes("devbox"));
   }
+  assert.equal(titles.size, 6);
 });
 
-test("Generated SEO files are current and sitemap includes only the two language routes with reciprocal alternatives", async () => {
+test("Generated SEO files are current and sitemap includes six routes with document-specific alternatives", async () => {
   const sitemap = sitemapXml();
   assert.equal(
     await readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8"),
     sitemap,
   );
-  assert.equal((sitemap.match(/<loc>/g) ?? []).length, 2);
+  assert.equal((sitemap.match(/<loc>/g) ?? []).length, 6);
   const entries = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map(
     (match) => match[1],
   );
-  for (const locale of ["fr", "en"]) {
+  for (const { locale, page } of siteRoutes) {
     const entry = entries.find((item) =>
-      item.includes(`<loc>${canonicalUrl(locale)}</loc>`),
+      item.includes(`<loc>${canonicalUrl(locale, page)}</loc>`),
     );
     assert.ok(entry);
     assert.equal((entry.match(/hreflang=/g) ?? []).length, 3);
     for (const language of ["fr", "en", "x-default"])
       assert.ok(
         entry.includes(
-          `hreflang="${language}" href="${canonicalUrl(language === "x-default" ? "fr" : language)}"`,
+          `hreflang="${language}" href="${canonicalUrl(language === "x-default" ? "fr" : language, page)}"`,
         ),
       );
   }

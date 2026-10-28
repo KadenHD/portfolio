@@ -55,7 +55,7 @@ typography:
 rounded:
   field: "4px"
   button: "6px"
-  dialog: "12px"
+  project: "12px"
   portrait: "16px"
   circle: "50%"
 spacing:
@@ -95,7 +95,7 @@ components:
   project-row:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.dialog}"
+    rounded: "{rounded.project}"
     padding: "24px"
   project-tag:
     textColor: "{colors.muted}"
@@ -106,11 +106,11 @@ components:
     size: "48px"
   carousel-control-hover:
     backgroundColor: "{colors.control-hover}"
-  legal-dialog:
+  legal-document:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.dialog}"
-    padding: "0"
+    maxWidth: "74ch"
+    paddingBlock: "{spacing.section}"
 ---
 
 # Design System: Pierre Clément
@@ -195,13 +195,12 @@ Les sections de lecture et les lignes de projets restent planes, sans ombre. Les
 ### Shadow Vocabulary
 
 - **Navigation mobile ouverte** (`0 14px 24px #09163812`) : détacher le panneau temporaire du contenu qu’il recouvre.
-- **Dialogue légal** (`0 20px 70px #09163830`) : distinguer le dialogue de la page, avec un voile marine (`#09163880`).
 
 **The Flat Reading Rule.** Garder les contenus de lecture plats ; les ombres existantes signalent les surfaces temporaires superposées.
 
 ## Shapes
 
-La forme dominante reste rectiligne. Les quatre cartes de réalisations ont un contour de 1 px en encre marine, orange au survol ou au focus interne, et un arrondi de 12 px. Les boutons possèdent un arrondi modéré, les champs un arrondi plus discret et le dialogue un arrondi plus ample, selon les tokens. Le cercle sert les commandes de témoignage et les avatars. Les bordures structurelles mesurent 1 px. Les icônes sont des tracés simples cohérents avec Lucide, à taille contenue.
+La forme dominante reste rectiligne. Les quatre cartes de réalisations ont un contour de 1 px en encre marine, orange au survol ou au focus interne, et un arrondi de 12 px. Les boutons possèdent un arrondi modéré et les champs un arrondi plus discret, selon les tokens. Le cercle sert les commandes de témoignage et les avatars. Les bordures structurelles mesurent 1 px. Les icônes sont des tracés simples cohérents avec Lucide, à taille contenue.
 
 ## Components
 
@@ -223,7 +222,7 @@ Signature textuelle forte et navigation sobre, sur une ligne de séparation. L�
 
 Dans la navbar et le footer, la signature « Pierre Clément. » garde son point orange signal. Seules les initiales P et C passent du marine à l’orange signal au survol ou au focus clavier, avec une transition de couleur de 0,18 s. Le reste du nom conserve sa couleur ; la réduction des animations supprime la transition.
 
-À 700 px et moins, le footer est centré : signature et offre empilées, réseaux et liens Localisation / FAQ centrés, puis copyright et commandes légales / retour en haut. Les liens peuvent revenir à la ligne en gardant des cibles de 44 px. Ce centrage ne se transmet pas au contenu des fenêtres légales. Au-dessus de 700 px, conserver les alignements de bureau.
+À 700 px et moins, le footer est centré : signature et offre empilées, réseaux et liens Localisation / FAQ centrés, puis copyright et liens légaux / retour en haut. Les liens peuvent revenir à la ligne en gardant des cibles de 44 px. Le contenu des pages légales reste aligné à gauche. Au-dessus de 700 px, conserver les alignements de bureau.
 
 ### Portrait et badges du hero
 
@@ -251,9 +250,9 @@ L’image garde un ratio de 16:10, sans commande superposée ni effet de zoom au
 
 Deux boutons circulaires bordés encadrent un compteur tabulaire. Le fond reste transparent au repos puis devient gris clair au survol. Les citations s’affichent dans une section grisée, avec guillemet orange et portrait d’auteur circulaire.
 
-### Legal dialog
+### Legal pages
 
-Surface blanche centrée horizontalement et verticalement, à largeur maximale de 760 px et hauteur maximale de 85dvh (viewport moins 24 px sur mobile). L’en-tête et les commandes restent fixes ; seul le texte défile. Un bouton Retour en haut est disponible lorsque le texte déborde et devient actif après défilement. Le bouton de fermeture est circulaire et mesure 44 px.
+Les mentions légales et la confidentialité disposent de pages FR/EN dédiées, avec la navbar et le footer communs. Colonne centrée de 74ch maximum, texte aligné à gauche et défilement normal de la page. Le H1 mesure de 32 à 52 px, avec une ponctuation orange et un filet inférieur. Les sous-titres H2 mesurent de 20 à 24 px ; les paragraphes restent à 16 px avec un interligne de 1.8. La date de mise à jour est plus discrète, à 14 px. Les sections sont séparées de 32 px. Les liens restent soulignés et deviennent orange au survol et au focus ; le SIREN et le SIRET restent insécables. Un lien « Retour au portfolio » précède le titre et revient en fin de document, accompagné de l’accès à l’autre document légal. Les deux commandes restent sur une ligne lorsque l’espace le permet, puis s’empilent naturellement. Le retour en haut reste dans le footer. Aucun ancien dialogue ou traitement d’ancre légale n’est conservé.
 
 Toutes les interactions utilisent le contour de focus global. Le défilement doux, les transitions et les animations sont supprimés lorsque `prefers-reduced-motion: reduce` est actif.
 
